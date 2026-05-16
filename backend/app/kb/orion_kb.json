@@ -1,0 +1,908 @@
+[
+  {
+    "id": "overview",
+    "title": "What Orion is",
+    "tags": [
+      "overview",
+      "system"
+    ],
+    "text": "Orion is an interactive threat-detection and analysis system. It simulates airborne, missile, orbital, and extraterrestrial-style tracks; synthesizes sensor-style observations; computes derived kinematic and contextual features; runs rule-based scoring, machine-learning analysis, and public-signature matching; and visualizes the result in 2D and 3D."
+  },
+  {
+    "id": "motivation",
+    "title": "Why Orion was built",
+    "tags": [
+      "motivation",
+      "defense",
+      "purpose"
+    ],
+    "text": "Orion was built as a prototype of a dream defense-oriented monitoring system. The motivation was to explore how a transparent system could estimate what an object might be, how risky it is, how certain the system is, and which signals justify that conclusion in a world where missile, drone, aircraft, and orbital awareness feel increasingly important."
+  },
+  {
+    "id": "pipeline",
+    "title": "System pipeline",
+    "tags": [
+      "pipeline",
+      "architecture"
+    ],
+    "text": "The runtime pipeline is: scenario generation, motion propagation, sensor synthesis, track update, feature extraction, rule-based scoring in the C++ engine, machine-learning assessment in Python, public-signature matching, event generation, and visualization. The pipeline is intentionally layered so the UI can expose intermediate evidence rather than only a final label."
+  },
+  {
+    "id": "scenario_generation",
+    "title": "Scenario generation",
+    "tags": [
+      "scenario",
+      "objects"
+    ],
+    "text": "Scenarios instantiate TruthObject instances with class type, source type, origin type, 3D position, velocity, physical size, shape class, thermal level, radiation level, radar cross-section proxy, transponder state, and profile metadata. Scenarios include mixed airspace, storm intrusion, drone swarm, ballistic approach, orbital pass, asteroid pass, and a live-public-data blend."
+  },
+  {
+    "id": "physics",
+    "title": "Physics and motion logic",
+    "tags": [
+      "physics",
+      "motion",
+      "dynamics"
+    ],
+    "text": "Motion propagation is class-specific. Aircraft and drones use bounded airframe-style movement with drag and wind drift. Missiles use high-speed inbound motion plus strong negative vertical acceleration to emulate ballistic or cruise-like descent. Satellites and debris receive tangential orbital-style updates. Asteroids receive inward gravitational-style acceleration. The point is not aerospace-grade fidelity but physically differentiated motion regimes."
+  },
+  {
+    "id": "sensors",
+    "title": "Sensor synthesis",
+    "tags": [
+      "sensors",
+      "signals"
+    ],
+    "text": "Each truth object is converted into a SensorObservation containing noisy position and velocity plus synthetic signal channels. Implemented channels include radar strength, thermal, radiation, size estimate, shape estimate, optical confidence, signal confidence, dropout count, jamming estimate, radar cross-section estimate, acoustic, plume index, magnetic anomaly, spectral class, infrared band, seeker emissions, ionization, doppler quality, and material reflectivity. Weather, visibility, and jamming degrade these observations."
+  },
+  {
+    "id": "tracking",
+    "title": "Tracking",
+    "tags": [
+      "tracking",
+      "kalman"
+    ],
+    "text": "The tracker uses a Kalman-lite TrackManager. It smooths the incoming observations into EstimatedTrack states with filtered x, y, z, velocity components, uncertainty, and confidence. The track retains history for trails and predicted future motion for visualization."
+  },
+  {
+    "id": "features",
+    "title": "Derived features",
+    "tags": [
+      "features",
+      "kinematics"
+    ],
+    "text": "Feature extraction computes directness toward the protected zone, distance to boundary, closing speed, time to zone, closest point of approach, predicted zone intersection, kinetic-energy proxy, impact probability, swarm likelihood, no-fly intrusion, and hazard proximity. Sensor values are also expanded into motion-related readings such as speed, horizontal speed, acceleration, climb rate, and heading."
+  },
+  {
+    "id": "cpp_engine",
+    "title": "C++ threat engine",
+    "tags": [
+      "c++",
+      "scoring"
+    ],
+    "text": "The primary interpretable threat score is produced by a C++ engine. For each track, Python serializes distance, time to zone, directness, speed, uncertainty, jamming, thermal, radiation, size, anomaly score, swarm likelihood, transponder state, no-fly state, hazard state, source type, and origin type. The engine computes intent, capability, confidence, environmental risk, anomaly contribution, and a fused threat score, then maps that score to benign, unknown, suspicious, or critical."
+  },
+  {
+    "id": "critical_logic",
+    "title": "Critical classification logic",
+    "tags": [
+      "critical",
+      "threat"
+    ],
+    "text": "Objects become critical when the fused score crosses the critical threshold or when post-fusion escalation rules trigger. Post-fusion escalation specifically boosts missiles, asteroids, and foreign craft when impact probability, directness, or public-signature confidence is high. The design goal is to avoid the unrealistic behavior where obviously dangerous inbound objects always decay back to benign."
+  },
+  {
+    "id": "ml_stack",
+    "title": "Machine learning stack",
+    "tags": [
+      "ml",
+      "ai",
+      "models"
+    ],
+    "text": "Orion uses three ML components. Isolation Forest provides an anomaly score indicating how far a track lies from expected feature patterns. Random Forest predicts a likely label from the current feature vector and exposes class probabilities and feature importances. KMeans assigns a coarse behavior cluster so similar movement patterns can be grouped even when labels differ. ML is used as evidence, not as the sole decision maker."
+  },
+  {
+    "id": "signature_matching",
+    "title": "Public-signature matching",
+    "tags": [
+      "public data",
+      "signatures",
+      "classification"
+    ],
+    "text": "The signature matcher compares observed readings and derived features against public-source-informed profile families. Implemented profile families include Boeing-737-style transport, F-16-style fighter, C-130-style transport, small quadrotor UAS, Shahed-136-style one-way UAS, Scud-style ballistic missile, Iskander-style short-range ballistic missile, Tomahawk-style cruise missile, a generic hypersonic-glide profile, ISS-like orbital objects, debris fragments, and near-Earth object profiles. The matcher returns the strongest profile, confidence, candidate list, and per-feature alignment."
+  },
+  {
+    "id": "public_sources",
+    "title": "Which public data Orion references",
+    "tags": [
+      "opensky",
+      "celestrak",
+      "jpl",
+      "csis"
+    ],
+    "text": "Orion uses OpenSky-style air-traffic state-vector regimes as references for aircraft behavior, CelesTrak-style orbital data for satellite and debris priors, NASA/JPL style small-body references for asteroid-like objects, and CSIS Missile Threat style profile families for missile priors. Public data is used as supporting evidence rather than as absolute truth for every object."
+  },
+  {
+    "id": "responses",
+    "title": "Response panel",
+    "tags": [
+      "response",
+      "operator"
+    ],
+    "text": "The response panel is a non-operational decision-support mockup. It lets the user choose actions such as increased tracking, evacuation advisory, contact aircraft, dispatch inspection team, simulated intercept, or stand down. These choices only create event log entries; they do not execute real actions."
+  },
+  {
+    "id": "3d_view",
+    "title": "2D and 3D views",
+    "tags": [
+      "2d",
+      "3d",
+      "ui"
+    ],
+    "text": "The 2D view is a tactical projection optimized for inspection, deconfliction, and reading multiple tracks at once. The 3D view is for altitude and spatial context. It uses a local geographic mapping for the selected region and renders track sprites above a real-world map surface. Camera presets provide top-down, angled, and height-profile views."
+  },
+  {
+    "id": "events",
+    "title": "Event timeline",
+    "tags": [
+      "events",
+      "timeline"
+    ],
+    "text": "The event timeline records system changes over time. Implemented events include scenario loads, track escalation to suspicious or critical, restricted-zone entry, anomaly spikes, public-signature matches, injected objects, removed objects, and response selections."
+  },
+  {
+    "id": "qna_scope",
+    "title": "Q&A assistant scope",
+    "tags": [
+      "assistant",
+      "scope"
+    ],
+    "text": "The Orion assistant is intentionally grounded. It is designed to answer questions about Orion's architecture, scenarios, sensors, ML, public data, physics, classification, UI, limitations, and motivation. If a question is unrelated to Orion or not supported by the project knowledge base, the assistant should say that the question is out of scope instead of inventing an answer. Ask Orion should also answer questions about visible UI elements such as the legend, statistics strip, scenario selector, environment controls, testing mode, 2D/3D map controls, selected-object panel, tabs, timeline, response panel, tooltips, and modals."
+  },
+  {
+    "id": "limitations",
+    "title": "Limitations",
+    "tags": [
+      "limitations",
+      "prototype"
+    ],
+    "text": "Orion is a prototype. It uses synthetic motion and synthetic sensor proxies. The ML models are trained on synthetic feature patterns. Public data is used to form profile priors and supporting evidence, not to provide guaranteed real-time truth for every track. The response system is a UI-level workflow simulation, not an operational command system."
+  },
+  {
+    "id": "graphics",
+    "title": "Graphics and rendering",
+    "tags": [
+      "graphics",
+      "sprites",
+      "rendering"
+    ],
+    "text": "Orion renders class-specific object graphics instead of generic markers. In 2D, tracks use vector sprite assets for aircraft, fighter aircraft, transport aircraft, drones, ballistic missiles, cruise missiles, hypersonic missiles, satellites, debris, asteroids, foreign craft, and unknown objects. In 3D, these same assets are used as billboards so the object remains identifiable while still appearing in geographic context."
+  },
+  {
+    "id": "object_families",
+    "title": "Object families",
+    "tags": [
+      "objects",
+      "families",
+      "classification"
+    ],
+    "text": "Orion distinguishes both object classes and profile families. The top-level classes are aircraft, drone, missile, satellite, debris, asteroid, foreign spaceship, and unknown. Within those classes, profile families such as Boeing 737-style transport, F-16-style fighter, C-130-style transport, Scud-style ballistic missile, Iskander-style short-range ballistic missile, and Tomahawk-style cruise missile provide more concrete identification evidence."
+  },
+  {
+    "id": "how_use",
+    "title": "How to use Orion",
+    "tags": [
+      "usage",
+      "how to"
+    ],
+    "text": "A good way to use Orion is: choose a scenario, inspect the 2D map, select a track, read the Summary tab, open Sensors for raw readings, open Analysis for ML and threat details, open Catalog for profile evidence, and use 3D only when you want spatial context or altitude. Testing mode lets you add and remove objects and observe the system response."
+  },
+  {
+    "id": "missile_classification",
+    "title": "How Orion classifies missiles",
+    "tags": [
+      "missile",
+      "classification"
+    ],
+    "text": "Missile classification is multi-layered. First, the track\u2019s kinematic regime is compared against missile-like expectations such as very high speed, direct approach, steep altitude change, plume index, seeker emissions, and high impact probability. Second, the C++ threat engine boosts capability and intent for missile-family tracks. Third, the public-signature matcher compares the observation against ballistic, cruise, and hypersonic-style profiles such as Scud-style, Iskander-style, Tomahawk-style, Kalibr-style, and a generic hypersonic-glide family. The final level is produced by fusing the rule score, ML outputs, and signature evidence."
+  },
+  {
+    "id": "aircraft_classification",
+    "title": "How Orion classifies aircraft",
+    "tags": [
+      "aircraft",
+      "classification"
+    ],
+    "text": "Aircraft classification uses a combination of altitude regime, speed regime, plume and acoustic pattern, radar cross-section proxy, transponder state, and public-signature-informed aircraft families. The matcher can support Boeing 737-style transport, A320-style transport, C-130-style military transport, F-16-style fighter, Su-35-style fighter, and Rafale-style fighter families as supporting evidence."
+  },
+  {
+    "id": "real_data_use",
+    "title": "How real data is integrated",
+    "tags": [
+      "real data",
+      "integration"
+    ],
+    "text": "Real data is integrated as public-source-informed priors and supporting profiles, not as a replacement for the simulated pipeline. Orion blends OpenSky-style aircraft state-vector regimes, orbital references inspired by CelesTrak, NASA/JPL style small-body references, and missile family references inspired by CSIS Missile Threat. The live/public layer therefore informs identification and explanation without assuming that every simulated object is a direct live public object."
+  },
+  {
+    "id": "simulated_vs_real",
+    "title": "What is simulated versus real",
+    "tags": [
+      "simulated",
+      "real",
+      "public data",
+      "limitations"
+    ],
+    "text": "Object motion, sensor synthesis, environmental effects, threat scoring, ML signals, event generation, response workflows, and most active tracks are simulated inside Orion. Public sources such as OpenSky, CelesTrak, NASA/JPL, and missile-reference material are used as supporting evidence for signature matching, priors, and reference profiles rather than as complete operational truth."
+  },
+  {
+    "id": "qa_architecture",
+    "title": "Orion Q&A architecture",
+    "tags": [
+      "assistant",
+      "qa",
+      "llm",
+      "retrieval",
+      "knowledge base"
+    ],
+    "text": "The Orion assistant is retrieval-grounded. It first searches Orion's own knowledge base for relevant sections, then sends the top grounded chunks plus strict scope instructions into GPT-4o-mini when an API key is configured. If no API key is configured, Orion falls back to local retrieval-only answering. For unrelated questions it should explicitly say the question is outside Orion's scope rather than guessing."
+  },
+  {
+    "id": "glossary_capability",
+    "title": "Capability definition",
+    "tags": [
+      "glossary",
+      "capability",
+      "analysis",
+      "threat",
+      "subscore"
+    ],
+    "text": "Capability is the rule-based estimate of how dangerous an object could be if it were hostile. Orion raises capability when the object family, speed regime, plume or propulsion signals, radiation, payload-like signatures, and projected impact characteristics imply a high-consequence threat. Missiles, large asteroid-like objects, and some foreign-spaceship profiles tend to produce higher capability than routine aircraft or drones."
+  },
+  {
+    "id": "glossary_intent",
+    "title": "Intent definition",
+    "tags": [
+      "glossary",
+      "intent",
+      "analysis",
+      "threat",
+      "subscore"
+    ],
+    "text": "Intent measures how strongly the track's behavior suggests movement toward a protected objective. Orion raises intent for direct approach geometry, high closing speed, low time-to-zone, predicted zone intersection, repeated course correction toward the protected area, and restricted-zone entry."
+  },
+  {
+    "id": "glossary_confidence",
+    "title": "Confidence definition",
+    "tags": [
+      "glossary",
+      "confidence",
+      "analysis",
+      "subscore"
+    ],
+    "text": "Confidence measures how trustworthy the current assessment is. Orion increases confidence when the track is stable, sensor readings are consistent, uncertainty is low, and public-signature or ML evidence agrees with the rule-based interpretation. Confidence decreases under jamming, poor visibility, missing observations, or conflicting evidence."
+  },
+  {
+    "id": "glossary_environment",
+    "title": "Environmental risk definition",
+    "tags": [
+      "glossary",
+      "environmental risk",
+      "analysis",
+      "subscore"
+    ],
+    "text": "Environmental risk captures how weather, hazards, degraded visibility, or jamming increase the danger or uncertainty of the situation. It is not the object's hostility by itself; it is the extra operational risk caused by the surrounding conditions."
+  },
+  {
+    "id": "glossary_risk_posture",
+    "title": "Risk posture definition",
+    "tags": [
+      "glossary",
+      "risk posture",
+      "summary"
+    ],
+    "text": "Risk posture is Orion's final threat interpretation for the track after combining intent, capability, confidence, environmental risk, anomaly signals, and signature evidence. It is surfaced as benign, unknown, suspicious, or critical."
+  },
+  {
+    "id": "glossary_sensor_penalty",
+    "title": "Sensor penalty definition",
+    "tags": [
+      "glossary",
+      "sensor penalty",
+      "stats",
+      "environment"
+    ],
+    "text": "Sensor penalty is a scene-level measure of how much sensing quality is being degraded by weather, visibility loss, and jamming. Higher sensor penalty means lower trust in raw observations and lower confidence in downstream analysis."
+  },
+  {
+    "id": "qa_answer_generation",
+    "title": "How Ask Orion generates answers",
+    "tags": [
+      "assistant",
+      "chatbot",
+      "q&a",
+      "llm",
+      "retrieval",
+      "knowledge base",
+      "answer generation",
+      "gpt-4o-mini"
+    ],
+    "text": "Ask Orion is a retrieval-grounded project assistant. When a user asks a question, the backend first searches Orion's local knowledge base with keyword, shortcut, and TF-IDF similarity retrieval. The most relevant entries are then used as grounded context. If OPENAI_API_KEY is configured, the backend sends the question and retrieved Orion context to GPT-4o-mini through the OpenAI Responses API with instructions to answer only from the retrieved project knowledge, stay concise, and avoid inventing implementation details. If no API key is configured, or if the API call fails, Ask Orion falls back to a local retrieval answer from the same knowledge base. This means the assistant's accuracy depends on the Orion KB and retrieval step; the LLM is used to phrase and synthesize grounded project facts, not to freely improvise."
+  },
+  {
+    "id": "qa_scope_and_fallback",
+    "title": "Ask Orion scope and fallback behavior",
+    "tags": [
+      "assistant",
+      "scope",
+      "out of scope",
+      "fallback",
+      "retrieval",
+      "curveballs"
+    ],
+    "text": "Ask Orion is intended to answer questions about Orion itself: how to use it, how the UI works, the scenario system, object families, sensors, derived features, scoring, ML models, public-data-informed signatures, 2D/3D visualization, response selection, event timeline, limitations, motivation, file structure, and how the assistant generates answers. For questions outside those topics, it should state that the question is outside Orion's scope and redirect to project topics. Near-scope questions should be answered only in terms of Orion's implemented behavior. The assistant should distinguish implemented features from planned or possible extensions."
+  },
+  {
+    "id": "backend_api_structure",
+    "title": "Backend API and runtime structure",
+    "tags": [
+      "backend",
+      "fastapi",
+      "api",
+      "state",
+      "step",
+      "settings",
+      "reset",
+      "add object",
+      "remove object",
+      "ask"
+    ],
+    "text": "The backend is a FastAPI app in backend/app/main.py. It serves the static frontend, owns the World simulation object, and exposes endpoints such as /api/state for the current scene, /api/step to advance time, /api/settings to update environment settings, /api/reset to reload a scenario, /api/add_object to inject a test object, /api/remove_object to remove a selected object, /api/respond to log a response selection, /api/ask for Ask Orion, and /api/ask_status to report whether LLM mode is available. The World class coordinates truth objects, physics stepping, sensor observations, tracking, feature enrichment, C++ threat scoring, signature matching, ML assessment, event generation, and serialized UI state."
+  },
+  {
+    "id": "frontend_ui_structure",
+    "title": "Frontend UI structure and controls",
+    "tags": [
+      "frontend",
+      "ui",
+      "controls",
+      "guided",
+      "analyst",
+      "2d",
+      "3d",
+      "tabs",
+      "modal",
+      "panels"
+    ],
+    "text": "The frontend is a single-page browser UI served from backend/app/static. index.html defines the intro overlay, technical overview modal, top controls, stats strip, left operations/environment panel, center 2D/3D view, scenario readout, right-side Inspect/Legend/Events/Deep dive/Response/Ask Orion tabs, guided tour card, global tooltip, and expanded-panel backdrop. app.js handles scenario switching, playback, speed, 2D drag/zoom, 3D view and camera presets, selected-object inspection, add/remove object actions, response logging, Ask Orion requests, guided tour state, technical overview behavior, and tooltip positioning. styles.css controls the dark tactical theme, overlays, tabs, cards, modals, tooltips, expanded panels, and visual hierarchy."
+  },
+  {
+    "id": "tooltips_system",
+    "title": "Tooltip system",
+    "tags": [
+      "tooltips",
+      "info tips",
+      "question mark",
+      "ui",
+      "global tooltip"
+    ],
+    "text": "Orion uses a global tooltip system for the question-mark info icons. Each info icon stores its explanation in a data-tip attribute. JavaScript listens for pointer movement over .info-tip elements, reads data-tip, and positions a single floating tooltip bubble in the viewport so it is not clipped by right-side panels or stat cards. The older CSS pseudo-element tooltip path is intentionally disabled to avoid duplicate tooltips or clipped boxes. Tooltips explain stats, summary chips, sensor rows, analysis fields, and other compact UI labels."
+  },
+  {
+    "id": "response_expanded_panels",
+    "title": "Expanded Ask Orion and response panels",
+    "tags": [
+      "response panel",
+      "ask orion",
+      "expanded panels",
+      "modal",
+      "backdrop",
+      "close outside"
+    ],
+    "text": "The Ask Orion and Response tabs can expand into larger focus panels. When expanded, a dark panel backdrop is shown behind the panel so the user can focus on the popup-like content. The expanded panels can be closed with their Close button, Escape, or by clicking the backdrop outside the panel. Response selection is a non-operational decision-support mockup: buttons log choices such as increased tracking, evacuation advisory, attempted aircraft contact, dispatch inspection team, simulated defensive intercept, or stand down. They do not execute any real-world action."
+  },
+  {
+    "id": "analysis_terms_glossary",
+    "title": "Analysis terms glossary",
+    "tags": [
+      "analysis",
+      "capability",
+      "intent",
+      "confidence",
+      "environment",
+      "anomaly",
+      "cluster",
+      "probabilities",
+      "influential features"
+    ],
+    "text": "Intent measures whether the object's behavior suggests approach or concern, using signals such as directness toward the protected zone, time-to-zone, no-fly intrusion, hazard proximity, and missing transponder. Capability estimates consequence potential from object family, speed, size, thermal signature, radiation, swarm likelihood, and class-specific priors such as missile or asteroid. Confidence estimates how reliable the interpretation is after uncertainty, jamming, sensor quality, and public/source evidence are considered. Environmental risk summarizes added risk from hazards, jamming, uncertainty, and extraterrestrial/non-terrestrial context. Anomaly score is the ML-backed signal for unusual behavior. Cluster ID is the KMeans behavior group. ML probabilities and influential features show how the model leaned toward an interpretation."
+  },
+  {
+    "id": "object_graphics_and_assets",
+    "title": "Object graphics and asset mapping",
+    "tags": [
+      "graphics",
+      "sprites",
+      "assets",
+      "3d geometry",
+      "2d map",
+      "object families",
+      "rendering"
+    ],
+    "text": "Orion includes local vector sprite assets under backend/app/static/assets for airliner, fighter, transport, drone, ballistic missile, cruise missile, hypersonic missile, satellite, debris, asteroid, foreign spaceship, and unknown tracks. The 2D renderer uses these assets and class-specific silhouettes so object families are visually distinguishable. The 3D view uses small Cesium geometry and/or icon-style rendering for spatial placement; this is still procedural visualization rather than imported glTF model quality. Object sizing is intentionally reduced in 3D so objects read as local markers in a region instead of giant icons."
+  },
+  {
+    "id": "scenario_specifics",
+    "title": "Implemented scenarios and what changes",
+    "tags": [
+      "scenarios",
+      "mixed airspace",
+      "storm intrusion",
+      "drone swarm",
+      "ballistic approach",
+      "orbital pass",
+      "asteroid pass",
+      "live public blend"
+    ],
+    "text": "Orion includes multiple scenarios that change the object mix, region, environmental conditions, and expected behaviors. Mixed airspace provides a balanced baseline. Storm intrusion increases weather, visibility degradation, jamming, and hazard effects. Drone swarm emphasizes multiple small coordinated tracks. Ballistic approach emphasizes high-speed inbound missile-like tracks and escalation logic. Orbital pass emphasizes satellites/debris and altitude/spatial context. Asteroid pass emphasizes extraterrestrial-style objects and high-consequence non-terrestrial signatures. Live public blend combines simulated activity with public-source-informed reference signals. Scenario switching calls reset with the selected scenario and reloads the object set."
+  },
+  {
+    "id": "real_data_and_profiles",
+    "title": "Real-world aircraft and missile profile handling",
+    "tags": [
+      "real data",
+      "aircraft families",
+      "missile families",
+      "public profiles",
+      "opensky",
+      "celestrak",
+      "nasa jpl",
+      "csis"
+    ],
+    "text": "Orion does not claim authoritative real-world identification. It uses public-source-informed signature profiles as reference evidence. Aircraft and missile families are represented as profile families such as airliner/transport/fighter and ballistic/cruise/hypersonic-style missiles. Profiles encode expected patterns such as speed ranges, altitude regime, radar/thermal/plume/radiation tendencies, transponder expectations, and object family priors. OpenSky, CelesTrak, NASA/JPL, and CSIS Missile Threat-style references are treated as source context or inspiration for profiles. Signature matching compares the current observed and derived values against these profiles and reports confidence, best label, and matching fields in the Catalog tab."
+  },
+  {
+    "id": "why_defense_motivation",
+    "title": "Defense-oriented motivation and war-awareness framing",
+    "tags": [
+      "motivation",
+      "defense",
+      "war",
+      "ukraine",
+      "middle east",
+      "iran",
+      "purpose",
+      "dream defense system"
+    ],
+    "text": "The motivation for Orion is defense-oriented but framed as a prototype and educational system. The project was built to explore how a monitoring interface could combine simulation, sensor evidence, ML, public-data-informed profiles, and visualization to support explainable awareness in a world where wars, drones, missiles, air defense, and regional conflict have made detection and decision-support feel more concrete. Orion is not a real defense system and does not make operational claims; it is a personal end-to-end prototype of a dream defense-analysis system that can be inspected, tested, and presented."
+  },
+  {
+    "id": "implementation_inventory",
+    "title": "Implementation inventory",
+    "tags": [
+      "files",
+      "implementation",
+      "modules",
+      "source code",
+      "project structure",
+      "scan"
+    ],
+    "text": "Current Orion project files include: backend/app/__init__.py; backend/app/api/__init__.py; backend/app/catalog/__init__.py; backend/app/catalog/public_sources.py; backend/app/features/__init__.py; backend/app/features/feature_extractor.py; backend/app/kb/orion_kb.json; backend/app/main.py; backend/app/models.py; backend/app/physics/__init__.py; backend/app/physics/dynamics.py; backend/app/qa_engine.py; backend/app/scenario_manager.py; backend/app/scoring/__init__.py; backend/app/scoring/anomaly_model.py; backend/app/scoring/fusion.py; backend/app/scoring/ml_models.py; backend/app/scoring/signature_matcher.py; backend/app/sensors/__init__.py; backend/app/sensors/sensor_model.py; backend/app/static/app.js; backend/app/static/assets/airliner.svg; backend/app/static/assets/asteroid.svg; backend/app/static/assets/ballistic_missile.svg; backend/app/static/assets/cruise_missile.svg; backend/app/static/assets/debris.svg; backend/app/static/assets/drone.svg; backend/app/static/assets/fighter.svg; backend/app/static/assets/hypersonic.svg; backend/app/static/assets/satellite.svg; backend/app/static/assets/spaceship.svg; backend/app/static/assets/transport.svg; backend/app/static/assets/unknown.svg; backend/app/static/index.html; backend/app/static/styles.css; backend/app/tracking/__init__.py; backend/app/tracking/kalman_tracker.py. This inventory is included so Ask Orion can answer high-level questions about where major pieces live in the project structure."
+  },
+  {
+    "id": "ui_legend",
+    "title": "Legend panel and map legend",
+    "tags": [
+      "legend",
+      "ui",
+      "2d",
+      "3d",
+      "map",
+      "overlays",
+      "protected area",
+      "restricted zone",
+      "hazard zone",
+      "predicted path"
+    ],
+    "text": "The Legend explains how to read the scene before opening technical details. It covers the solid blue protected area, amber restricted/no-fly zone, red hazard or degraded-environment zone, dashed predicted paths, threat colors, weather/wind/jamming overlays, and the purpose of 2D versus 3D viewing. If someone asks what the legend is for, the answer is that it is a quick visual key for interpreting Orion's map and globe overlays."
+  },
+  {
+    "id": "ui_stats_strip",
+    "title": "Top statistics strip",
+    "tags": [
+      "stats",
+      "total",
+      "benign",
+      "unknown",
+      "suspicious",
+      "critical",
+      "sensor penalty",
+      "dashboard",
+      "summary"
+    ],
+    "text": "The top statistics strip summarizes the current scene. Total is the number of active tracks. Benign, Unknown, Suspicious, and Critical count how many tracks currently fall into each threat level. Sensor penalty summarizes how much weather, hazards, jamming, visibility loss, and uncertainty are degrading the sensing pipeline. These numbers are meant as a quick operator overview rather than a detailed technical report."
+  },
+  {
+    "id": "ui_modes",
+    "title": "Guided mode and Analyst mode",
+    "tags": [
+      "guided",
+      "analyst",
+      "mode",
+      "ui",
+      "presentation"
+    ],
+    "text": "Guided mode keeps the interface easier to read by emphasizing summaries and plain-language explanations first. Analyst mode exposes deeper detail such as raw sensor-style readings, analysis sub-scores, ML outputs, signature matching, model details, and implementation-oriented panels. The same underlying scene and tracks are used in both modes; only the amount of visible detail changes."
+  },
+  {
+    "id": "ui_intro_and_tour",
+    "title": "Intro overlay and guided tour",
+    "tags": [
+      "intro",
+      "start quick tour",
+      "open system",
+      "how orion works",
+      "technical overview",
+      "guided demo",
+      "tour"
+    ],
+    "text": "The intro overlay frames Orion before the user enters the system. Start quick tour begins a guided walkthrough. Open system skips directly into the main interface. How Orion works opens a short conceptual explanation, and Technical overview opens a deeper architecture and implementation explanation. The guided tour walks through the monitored region, colors and overlays, tracks, risk reasoning, tabs, scenarios, 2D/3D views, testing mode, and the timeline."
+  },
+  {
+    "id": "ui_scenario_controls",
+    "title": "Scenario controls",
+    "tags": [
+      "scenario",
+      "scenario dropdown",
+      "mixed airspace",
+      "storm intrusion",
+      "drone swarm",
+      "ballistic approach",
+      "orbital pass",
+      "asteroid pass",
+      "live public blend"
+    ],
+    "text": "The Scenario dropdown changes the active situation and resets the scene. Mixed Airspace is a balanced general scenario. Storm Intrusion emphasizes degraded sensing. Drone Swarm emphasizes clustered small-object behavior. Ballistic Approach emphasizes fast inbound missile-like threats. Orbital Pass emphasizes high-altitude orbital objects. Asteroid Pass emphasizes extraterrestrial-style objects. Live Public Blend mixes simulated tracks with public-source-informed signatures. The scenario readout under the map explains the active scenario."
+  },
+  {
+    "id": "ui_environment_controls",
+    "title": "Environment controls",
+    "tags": [
+      "environment",
+      "weather",
+      "wind",
+      "visibility",
+      "jamming",
+      "hazard intensity",
+      "apply environment"
+    ],
+    "text": "The Environment tab lets the user change weather, wind, visibility, jamming, and hazard intensity. These values are not only visual decoration: they affect sensor confidence, uncertainty, environmental risk, and the visible weather/jamming/wind overlays. Apply environment updates the current scene with the selected environmental settings."
+  },
+  {
+    "id": "ui_testing_mode",
+    "title": "Testing mode and object injection",
+    "tags": [
+      "testing",
+      "add object",
+      "remove selected",
+      "aircraft",
+      "drone",
+      "missile",
+      "satellite",
+      "debris",
+      "asteroid",
+      "foreign spaceship"
+    ],
+    "text": "Testing mode lets the user inject new objects into the active scene. The selectable object types are aircraft, drone, missile, satellite, debris, asteroid, and foreign spaceship. Added objects enter the same detection pipeline as scenario objects: propagation, sensors, features, scoring, ML, signature matching, visualization, and event logging. Remove selected deletes the currently selected track from the scene."
+  },
+  {
+    "id": "ui_map_2d",
+    "title": "2D tactical map",
+    "tags": [
+      "2d",
+      "map",
+      "canvas",
+      "pan",
+      "zoom",
+      "drag",
+      "recenter",
+      "overlays",
+      "graphics"
+    ],
+    "text": "The 2D tactical map is the primary overview view. It shows a stylized regional backdrop, protected/restricted/hazard zones, tracks, predicted paths, weather overlays, wind arrows, jamming rings, object sprites, altitude tethers, and labels. Users can left-click drag to pan, use the mouse wheel or +/\u2212 buttons to zoom, and use Reset/Recenter controls to return the map to a readable view."
+  },
+  {
+    "id": "ui_globe_3d",
+    "title": "3D globe view and camera controls",
+    "tags": [
+      "3d",
+      "globe",
+      "cesium",
+      "camera",
+      "top-down",
+      "angled",
+      "height profile",
+      "find in 3d",
+      "above selected",
+      "zoom"
+    ],
+    "text": "The 3D view uses Cesium to show the scene in a spatial Earth-based view. It is meant to show altitude separation, regional placement, and relative geometry that are flattened in 2D. Camera presets include Top-down, Angled, and Height profile. Find in 3D moves the camera to the selected object with an offset, while Above selected places the camera above the selected object. 3D has its own +/\u2212/Reset camera controls."
+  },
+  {
+    "id": "ui_region_controls",
+    "title": "Region selector",
+    "tags": [
+      "region",
+      "southern california",
+      "bay area",
+      "nevada test range",
+      "pacific northwest",
+      "east coast",
+      "location"
+    ],
+    "text": "The Region selector changes the geographic anchor used by the 3D globe and contextual 2D backdrop. Regions include Southern California, Bay Area, Nevada Test Range, Pacific Northwest, and East Coast. The region affects camera framing and where local coordinates are mapped on the globe."
+  },
+  {
+    "id": "ui_playback_speed",
+    "title": "Playback, step, reset, and speed",
+    "tags": [
+      "play",
+      "pause",
+      "step",
+      "reset",
+      "speed",
+      "simulation speed",
+      "time"
+    ],
+    "text": "Playback controls drive simulation time. Play/Pause starts or stops continuous stepping. Step advances the simulation manually. Reset reloads the current scenario from its starting state. Speed changes how quickly the simulation advances, with choices such as 0.25x, 0.5x, 1x, 1.5x, 2x, and 4x."
+  },
+  {
+    "id": "ui_inspect_panel",
+    "title": "Inspect panel and selected object",
+    "tags": [
+      "inspect",
+      "selected object",
+      "track dropdown",
+      "find in 3d",
+      "above selected",
+      "remove selected",
+      "summary"
+    ],
+    "text": "The Inspect panel is the main object-level drilldown. Users can select a track using the dropdown or by clicking a visible object. It includes Remove selected, Find in 3D, and Above selected controls. The Summary tab explains the object in plain language, while Sensors, Analysis, Catalog, and Model tabs expose deeper evidence."
+  },
+  {
+    "id": "ui_summary_tab",
+    "title": "Summary tab",
+    "tags": [
+      "summary",
+      "why flagged",
+      "risk posture",
+      "behavior pattern",
+      "confidence band",
+      "signature match",
+      "provenance",
+      "public prior use",
+      "threat score",
+      "cpa",
+      "ttz"
+    ],
+    "text": "The Summary tab is the plain-language first read for a selected object. It includes a 'Why Orion flagged this object' explanation plus chips for risk posture, behavior pattern, confidence band, signature match, provenance, and public prior use. It also shows values like threat score, closest point of approach (CPA), time to zone (TTZ), match confidence, and supporting evidence link when available."
+  },
+  {
+    "id": "ui_sensors_tab",
+    "title": "Sensors tab",
+    "tags": [
+      "sensors",
+      "sensor readings",
+      "simple",
+      "complex",
+      "radar",
+      "thermal",
+      "radiation",
+      "speed",
+      "velocity",
+      "acceleration",
+      "altitude",
+      "heading",
+      "closing speed"
+    ],
+    "text": "The Sensors tab shows raw and derived sensor-style readings for the selected object. Simple mode shows the most important signals, while Complex mode exposes the fuller stack. Readings can include radar strength, thermal, radiation, size estimate, shape estimate, optical confidence, signal confidence, dropout count, jamming estimate, radar cross-section proxy, acoustic, plume index, magnetic, spectral class, transponder state, speed, horizontal speed, velocity vector, acceleration, heading, climb rate, altitude, distance to zone, and closing speed."
+  },
+  {
+    "id": "ui_analysis_tab",
+    "title": "Analysis tab",
+    "tags": [
+      "analysis",
+      "intent",
+      "capability",
+      "confidence",
+      "environmental risk",
+      "anomaly",
+      "ml predicted label",
+      "cluster",
+      "probabilities",
+      "feature importance"
+    ],
+    "text": "The Analysis tab shows how Orion interprets a selected object after feature extraction. It includes rule-based sub-scores such as intent, capability, confidence, and environmental risk. It also shows anomaly score, ML predicted label, behavior cluster, label probabilities, influential features, directness, swarm likelihood, no-fly intrusion, and hazard proximity when available."
+  },
+  {
+    "id": "ui_catalog_tab",
+    "title": "Catalog tab",
+    "tags": [
+      "catalog",
+      "signature matching",
+      "public data",
+      "source links",
+      "profile match",
+      "candidate profiles",
+      "matched sensor values"
+    ],
+    "text": "The Catalog tab shows reference-profile and public-source-informed evidence. It explains the selected object's source type, origin, label, signature match, candidate profiles, source links, and matched sensor values. It is where users can see which observed readings best align with a known or fallback object profile."
+  },
+  {
+    "id": "ui_model_tab",
+    "title": "Model tab",
+    "tags": [
+      "model",
+      "physics model",
+      "tracking model",
+      "prediction model",
+      "ai model",
+      "implementation"
+    ],
+    "text": "The Model tab lists the major model layers involved for the selected track, such as the physics model, tracking model, prediction model, and AI model. It is intended to show which parts of the pipeline are contributing to the current interpretation without overwhelming the Summary tab."
+  },
+  {
+    "id": "ui_deep_dive_tab",
+    "title": "Deep dive tab",
+    "tags": [
+      "deep dive",
+      "technical deep dive",
+      "architecture",
+      "ai ml",
+      "public data",
+      "physics",
+      "feature pipeline"
+    ],
+    "text": "The Deep dive tab is optional technical reading for people who want to understand Orion's design. It summarizes the core stack, motivation, layered architecture, pipeline steps, ML models, public-data-informed signatures, physics and environment effects, and which tabs expose which evidence. It exists so technical viewers can explore depth without cluttering the main demo."
+  },
+  {
+    "id": "ui_response_panel",
+    "title": "Response selection panel",
+    "tags": [
+      "response",
+      "operator response",
+      "increase tracking priority",
+      "evacuation advisory",
+      "aircraft contact",
+      "inspection team",
+      "defensive intercept",
+      "stand down"
+    ],
+    "text": "The Response panel lets users choose simulated operator responses for the selected object. Options include Increase tracking priority, Evacuation advisory, Attempt aircraft contact, Dispatch inspection team, Simulate defensive intercept, and Stand down / monitor. These choices only log decisions inside Orion; they do not execute real-world actions. The panel can be expanded into a focused modal."
+  },
+  {
+    "id": "ui_ask_orion_panel",
+    "title": "Ask Orion panel",
+    "tags": [
+      "ask orion",
+      "assistant",
+      "chat",
+      "q&a",
+      "question answering",
+      "expand chat"
+    ],
+    "text": "The Ask Orion panel is the built-in project assistant. It answers questions about Orion's architecture, usage, sensors, scenarios, ML, public data, physics, response options, UI, limitations, and implementation. It can be expanded into a larger focused chat modal. When an OpenAI API key is configured, Ask Orion uses retrieved Orion knowledge with GPT-4o-mini; otherwise it falls back to local retrieval-only answers."
+  },
+  {
+    "id": "ui_events_timeline",
+    "title": "Events timeline",
+    "tags": [
+      "events",
+      "timeline",
+      "event log",
+      "scenario loaded",
+      "classification escalation",
+      "zone entry",
+      "anomaly spike",
+      "signature match"
+    ],
+    "text": "The Events timeline records meaningful changes over time so users can see how the situation evolves. It can include scenario loads, classification escalations, critical or suspicious transitions, restricted-zone entries, anomaly spikes, public-signature matches, response selections, and other notable state changes."
+  },
+  {
+    "id": "ui_tooltips",
+    "title": "Infotips and question-mark help",
+    "tags": [
+      "tooltip",
+      "tooltips",
+      "infotips",
+      "question mark",
+      "help bubble"
+    ],
+    "text": "Question-mark infotips explain UI terms without forcing users to read long documentation. Orion uses a single floating global tooltip system so help bubbles can escape panel boundaries and avoid being clipped by sidebars. Infotips exist for stats, summary fields, sensor readings, analysis terms, and other technical labels."
+  },
+  {
+    "id": "ui_modals_and_expansion",
+    "title": "Modals, popups, and expanded panels",
+    "tags": [
+      "modal",
+      "popup",
+      "overlay",
+      "click outside",
+      "close x",
+      "expanded panel",
+      "focus backdrop"
+    ],
+    "text": "Orion uses modal overlays for the intro, technical overview, expanded Ask Orion panel, and expanded Response panel. These overlays are meant to darken the background, focus attention on the content, and be dismissible with an X button or by clicking outside the modal when appropriate."
+  },
+  {
+    "id": "assistant_completeness",
+    "title": "Ask Orion knowledge coverage",
+    "tags": [
+      "assistant",
+      "knowledge base",
+      "coverage",
+      "all parts",
+      "scope",
+      "legend",
+      "ui",
+      "implementation"
+    ],
+    "text": "Ask Orion's knowledge base should cover every visible part of the project: intro, guided tour, technical overview, top stats, modes, views, camera controls, region selector, playback, scenarios, environment, testing mode, 2D map, 3D globe, legend, inspect panel, summary, sensors, analysis, catalog, model, deep dive, response panel, Ask Orion itself, events timeline, tooltips, modals, backend routes, simulation pipeline, physics, sensors, tracking, features, scoring, ML, public data, graphics, limitations, and motivation. If a question is about any of these project elements, it should be treated as in scope."
+  },
+  {
+    "id": "ui_response_selection_dropdown",
+    "title": "Response target selection",
+    "tags": [
+      "response panel",
+      "dropdown",
+      "selected object",
+      "response target"
+    ],
+    "text": "The Response panel includes a target dropdown so the operator can choose which track a response applies to. It mirrors the selected track from the Inspect panel, but it can also be changed independently inside the Response panel before logging a response action."
+  },
+  {
+    "id": "ui_assistant_launcher",
+    "title": "Ask Orion launcher",
+    "tags": [
+      "chat icon",
+      "bottom right",
+      "assistant launcher",
+      "expand assistant"
+    ],
+    "text": "Ask Orion can be opened from the floating chat launcher in the bottom-right corner. Opening it expands the assistant into a focused overlay panel with a darker backdrop so the user can read and ask technical questions without losing the rest of the page."
+  },
+  {
+    "id": "ui_globe_labels",
+    "title": "3D labels and selection",
+    "tags": [
+      "3d labels",
+      "double click",
+      "find in 3d",
+      "select object"
+    ],
+    "text": "In the 3D view, each track keeps a visible label so the operator can spot and identify objects even while zoomed out. Clicking a 3D object selects it, and double-clicking focuses the camera on it. The Find in 3D and Above selected buttons move the camera to a more readable offset relative to the chosen object."
+  },
+  {
+    "id": "critical_unknown_logic",
+    "title": "Unknown dangerous escalation logic",
+    "tags": [
+      "unknown dangerous",
+      "unresolved unknown",
+      "critical unknown",
+      "airspace",
+      "unidentified"
+    ],
+    "text": "Orion treats long-running unidentified tracks near sensitive airspace as increasingly dangerous. If an unknown or weakly identified track remains unresolved for long enough while approaching or entering a restricted/protected region, Orion raises its threat score even if it never resolves the identity cleanly. That is why an unresolved track can escalate to suspicious or critical instead of settling harmlessly as benign."
+  },
+  {
+    "id": "object_lines_meaning",
+    "title": "What the object lines mean",
+    "tags": [
+      "lines on map",
+      "predicted line",
+      "track line"
+    ],
+    "text": "The line attached to a track is not a trail from the distant past; it is Orion's short-horizon predicted future path. It is computed from the current estimated state and is meant to show where the object is likely heading next. Orion shows these lines more selectively in guided mode because drawing them for every object at once can make the scene harder to read."
+  }
+]

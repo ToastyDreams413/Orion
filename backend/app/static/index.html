@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Orion</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/cesium@1.121/Build/Cesium/Cesium.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cesium@1.121/Build/Cesium/Widgets/widgets.css" />
+</head>
+<body>
+  <div id="helpOverlay" class="overlay show fullscreen-landing" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+    <section class="landing-modal" aria-label="Orion landing page">
+      <div class="landing-bg-grid" aria-hidden="true"></div>
+      <div class="landing-orbit orbit-a" aria-hidden="true"></div>
+      <div class="landing-orbit orbit-b" aria-hidden="true"></div>
+
+      <div class="landing-hero-full">
+        <div class="landing-copy">
+          <div class="intro-badge">Global defense simulation prototype</div>
+          <h1 id="helpTitle">Orion</h1>
+          <p class="landing-lead">A global defense-simulation dashboard for tracking air and space objects, scoring risk, and asking an AI advisor what to inspect next.</p>
+          <div class="landing-actions">
+            <div class="landing-actions-row landing-actions-main">
+              <button id="skipHelp" class="landing-primary" type="button">Launch simulation</button>
+              <button id="closeHelp" class="pill secondary" type="button">Start guided tour</button>
+              <button id="techBtnIntro" class="pill secondary" type="button">Technical overview</button>
+            </div>
+            <div class="landing-actions-row landing-actions-slides">
+              <a class="pill secondary presentation-link" href="/static/presentation-schematic.html">Intro Slides</a>
+              <a class="pill secondary presentation-link" href="/static/presentation-conclusion.html">Concluding Slides</a>
+            </div>
+          </div>
+          <div class="landing-note">Simulation only: decision support, evidence fusion, and AI reasoning — no real-world control.</div>
+        </div>
+
+        <div class="landing-command-card" aria-hidden="true">
+          <div class="command-topline"><span>ORION GLOBAL WATCH</span><b>LIVE SIM</b></div>
+          <div class="landing-radar">
+            <div class="radar-ring r1"></div>
+            <div class="radar-ring r2"></div>
+            <div class="radar-ring r3"></div>
+            <div class="radar-sweep"></div>
+            <span class="radar-dot d1"></span>
+            <span class="radar-dot d2"></span>
+            <span class="radar-dot d3"></span>
+            <span class="radar-dot d4"></span>
+          </div>
+          <div class="mini-status-grid">
+            <span><b>Fusion</b> sensor + motion evidence</span>
+            <span><b>ML</b> anomaly + policy model</span>
+            <span><b>3D</b> full-globe tracking</span>
+            <span><b>Audit</b> inspectable rationale</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="landing-cards landing-cards-full">
+        <div class="landing-card"><b>Global operating picture</b><span>Monitor global air and space tracks on a full Earth view.</span></div>
+        <div class="landing-card"><b>Evidence, not black boxes</b><span>Inspect sensors, features, ML outputs, catalog matches, and score rationale.</span></div>
+        <div class="landing-card"><b>AI scenario advisor</b><span>Ask what matters now, why it matters, and what response is recommended.</span></div>
+        <div class="landing-card"><b>Realistic response options</b><span>Compare monitoring, identity checks, patrol dispatch, advisories, and simulated intercept workflows.</span></div>
+      </div>
+    </section>
+  </div>
+
+  <div id="techOverlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="techTitle">
+    <div class="modal tech-modal tech-modal-v2">
+      <button id="closeTechX" class="modal-x" type="button" aria-label="Close">×</button>
+      <div class="tech-hero">
+        <div>
+          <div class="intro-badge">Technical overview</div>
+          <h2 id="techTitle">Orion system design</h2>
+          <p class="tech-hero-copy">A simulation-first defense dashboard that turns object motion, sensor signals, ML predictions, and rule-based scoring into an explainable operating picture.</p>
+        </div>
+        <button id="closeTech" class="pill secondary" type="button">Close</button>
+      </div>
+
+      <section class="tech-purpose-card">
+        <div class="tech-purpose-icon">◎</div>
+        <div>
+          <h3>Purpose</h3>
+          <p>Modern wars are shaped by fast drones, missiles, aircraft, and ambiguous signals. Orion asks a simple human question: when the screen fills with tracks, what should an analyst look at first, and what evidence supports that call?</p>
+        </div>
+      </section>
+
+      <div class="tech-metric-grid">
+        <div class="tech-metric"><b>Python</b><span>FastAPI, simulation loop, APIs, advisor logic</span></div>
+        <div class="tech-metric"><b>C++</b><span>Optional fast scoring engine with Python fallback</span></div>
+        <div class="tech-metric"><b>ML</b><span>Anomaly detection, class prediction, behavior clustering, advisor policy</span></div>
+        <div class="tech-metric"><b>3D</b><span>Cesium globe with US-perspective global tracks, protected airspaces, visible-side labels, and priority highlighting</span></div>
+      </div>
+
+      <div class="tech-flow">
+        <div class="flow-step"><span>1</span><b>Scenario</b><p>Generate aircraft, drones, missiles, orbital objects, and ambiguous tracks.</p></div>
+        <div class="flow-step"><span>2</span><b>Sensors</b><p>Synthesize radar, thermal, optical, plume, transponder, jamming, and dropout signals.</p></div>
+        <div class="flow-step"><span>3</span><b>Features</b><p>Compute speed, closing rate, altitude, time-to-zone, CPA, signal quality, and behavior cues.</p></div>
+        <div class="flow-step"><span>4</span><b>Fusion</b><p>Combine intent, capability, confidence, and environment into a threat score.</p></div>
+        <div class="flow-step"><span>5</span><b>AI advisor</b><p>Rank tracks, explain evidence, compare response options, and return confidence.</p></div>
+      </div>
+
+      <div class="tech-sections tech-sections-v2">
+        <section class="tech-section">
+          <h3>Architecture</h3>
+          <ul>
+            <li><b>Frontend:</b> vanilla JS dashboard with 2D canvas, Cesium 3D globe, object inspection, event log, and advisor chat.</li>
+            <li><b>Backend:</b> FastAPI serves state, scenario settings, response logging, project Q&amp;A, and advisor endpoints.</li>
+            <li><b>Scoring:</b> interpretable risk components are computed in C++ when built, otherwise by an equivalent Python fallback.</li>
+          </ul>
+        </section>
+
+        <section class="tech-section">
+          <h3>AI / ML layer</h3>
+          <ul>
+            <li><b>Isolation Forest:</b> flags tracks whose feature vectors look unusual for the current scene.</li>
+            <li><b>Random Forest:</b> predicts likely object class and provides an optional trained advisor-policy second opinion.</li>
+            <li><b>Grounded LLM advisor:</b> when configured, receives a compact live-state packet and writes the commander-facing answer.</li>
+            <li><b>KMeans:</b> groups behavior patterns such as direct approach, loitering, pass-by, and high-altitude transit.</li>
+          </ul>
+        </section>
+
+        <section class="tech-section">
+          <h3>Advisor logic</h3>
+          <ul>
+            <li>Computes deterministic playbook guidance first, then uses an LLM for stronger conversational synthesis when an API key is present.</li>
+            <li>Ranks the full scenario or focuses on a named track without requiring a dropdown.</li>
+            <li>Answers broad questions like “what matters now?” and specific questions like “what does capability on A1 mean?”</li>
+            <li>Recommends simulated options such as monitor, identify, communicate, dispatch patrol, advisory, or intercept workflow.</li>
+          </ul>
+        </section>
+
+        <section class="tech-section">
+          <h3>Explainability and safety</h3>
+          <ul>
+            <li>Every recommendation is tied back to visible scores, sensor evidence, and the deterministic fallback answer.</li>
+            <li>The app is a portfolio simulation only; it does not control real systems.</li>
+            <li>The goal is analyst decision support: prioritize, explain, and reduce uncertainty.</li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <div id="tourScrim" class="tour-scrim hidden"></div>
+
+  <header class="topbar" data-tour-id="topbar">
+    <div class="brand-block">
+      <div class="eyebrow">Interactive detection and analysis system</div>
+      <h1>Orion</h1>
+      <div id="summaryMessage" class="subtle">Loading…</div>
+    </div>
+
+    <div class="toolbar-group" data-tour-id="modeBar">
+      <span class="group-label">Mode</span>
+      <div class="segmented">
+        <button id="guidedToggle" class="pill active" type="button">Guided</button>
+        <button id="analystToggle" class="pill" type="button">Analyst</button>
+      </div>
+    </div>
+
+    <div class="toolbar-group">
+      <span class="group-label">View</span>
+      <div class="segmented">
+        <button id="view2d" class="pill active" type="button">2D</button>
+        <button id="view3d" class="pill" type="button">3D</button>
+      </div>
+    </div>
+
+    <div class="toolbar-group">
+      <span class="group-label">Camera</span>
+      <div class="segmented">
+        <button id="recenter2d" class="pill" type="button">Recenter 2D</button>
+        <button id="recenter3d" class="pill" type="button">Recenter 3D</button>
+      </div>
+    </div>
+
+    <div class="toolbar-group">
+      <span class="group-label">3D angle</span>
+      <select id="cameraPresetSelect">
+        <option value="topdown">Top-down</option>
+        <option value="angled" selected>Angled</option>
+        <option value="height">Height profile</option>
+      </select>
+    </div>
+
+    <div class="toolbar-group" data-tour-id="playbackBar">
+      <span class="group-label">Playback</span>
+      <div class="segmented segmented-playback">
+        <button id="playBtn" class="pill" type="button">Play</button>
+        <button id="stepBtn" class="pill" type="button">Step</button>
+        <button id="resetBtn" class="pill" type="button">Reset</button>
+      </div>
+    </div>
+
+    <div class="toolbar-group speed-group">
+      <span class="group-label">Speed</span>
+      <select id="speedSelect">
+        <option value="0.25">0.25×</option>
+        <option value="0.5">0.5×</option>
+        <option value="1" selected>1×</option>
+        <option value="1.5">1.5×</option>
+        <option value="2">2×</option>
+        <option value="4">4×</option>
+      </select>
+    </div>
+
+    <button id="helpBtn" class="pill secondary" type="button">Home</button>
+    <button id="techBtnTop" class="pill secondary" type="button">Technical overview</button>
+  </header>
+
+  <div class="stats-strip">
+    <div class="stat"><span>Total <span class="info-tip" data-tip="The total number of actively tracked objects in the scene." aria-label="The total number of actively tracked objects in the scene.">?</span></span><b id="statTotal">0</b></div>
+    <div class="stat"><span>Benign <span class="info-tip" data-tip="Objects currently assessed as low-risk or routine." aria-label="Objects currently assessed as low-risk or routine.">?</span></span><b id="statBenign">0</b></div>
+    <div class="stat"><span>Unknown <span class="info-tip" data-tip="Objects that do not yet have enough evidence for a stronger classification." aria-label="Objects that do not yet have enough evidence for a stronger classification.">?</span></span><b id="statUnknown">0</b></div>
+    <div class="stat"><span>Suspicious <span class="info-tip" data-tip="Objects showing unusual or concerning behavior, but not yet the highest risk." aria-label="Objects showing unusual or concerning behavior, but not yet the highest risk.">?</span></span><b id="statSuspicious">0</b></div>
+    <div class="stat"><span>Critical <span class="info-tip" data-tip="Objects with strong threat indicators or urgent approach characteristics." aria-label="Objects with strong threat indicators or urgent approach characteristics.">?</span></span><b id="statCritical">0</b></div>
+    <div class="stat"><span>Sensor penalty <span class="info-tip" data-tip="Estimated quality loss from weather, visibility degradation, and jamming. Higher means less reliable sensing." aria-label="Estimated quality loss from weather, visibility degradation, and jamming. Higher means less reliable sensing.">?</span></span><b id="statPenalty">0</b></div>
+  </div>
+
+  <div class="workspace-bar" aria-label="Workspace shortcuts">
+    <button id="toggleLeftPanel" class="pill secondary" type="button">Hide setup</button>
+    <button class="workspace-shortcut" data-left-jump="ops" type="button"><b>Scenario</b><span>Preset + objects</span></button>
+    <button class="workspace-shortcut" data-left-jump="env" type="button"><b>Environment</b><span>Weather + jamming</span></button>
+    <button class="workspace-shortcut" data-right-jump="inspect" type="button"><b>Inspect</b><span>Selected track</span></button>
+    <button class="workspace-shortcut primary" data-right-jump="response" type="button"><b>AI Advisor</b><span>Ask what to do</span></button>
+    <button class="workspace-shortcut" data-right-jump="events" type="button"><b>Events</b><span>Audit log</span></button>
+    <button id="toggleRightPanel" class="pill secondary" type="button">Hide analysis</button>
+  </div>
+
+  <main class="layout">
+    <button id="restoreLeftPanel" class="drawer-restore restore-left hidden" type="button">Setup</button>
+    <button id="restoreRightPanel" class="drawer-restore restore-right hidden" type="button">Analysis</button>
+    <aside class="left-panel">
+      <div class="panel-mini-head"><span>Simulation setup</span><button id="collapseLeftInline" class="mini-icon-btn" type="button" aria-label="Hide setup panel">‹</button></div>
+      <div class="side-tabs">
+        <button class="side-tab active" data-left-view="ops" type="button">Operations</button>
+        <button class="side-tab" data-left-view="env" type="button">Environment</button>
+      </div>
+
+      <div id="leftOps" class="side-view active">
+        <section class="card" data-tour-id="scenarioPanel">
+          <h3>Scenario</h3>
+          <select id="scenario"></select>
+          <div id="scenarioDescription" class="scenario-description"></div>
+        </section>
+
+        <section class="card" data-tour-id="testingPanel">
+          <h3>Testing mode</h3>
+          <label>Add object
+            <select id="addObjectKind">
+              <option value="aircraft">Aircraft</option>
+              <option value="drone">Drone</option>
+              <option value="missile">Missile</option>
+              <option value="satellite">Satellite</option>
+              <option value="debris">Debris</option>
+              <option value="asteroid">Asteroid</option>
+              <option value="foreign_spaceship">Foreign spaceship</option>
+            </select>
+          </label>
+          <div class="testing-actions"><button id="addObjectBtn" type="button">Add object</button><button id="removeObjectBtnSecondary" class="pill danger" type="button">Remove selected</button></div>
+        </section>
+      </div>
+
+      <div id="leftEnv" class="side-view hidden">
+        <section class="card">
+          <h3>Environment</h3>
+          <label>Weather
+            <select id="weather">
+              <option>clear</option>
+              <option>rain</option>
+              <option>fog</option>
+              <option>storm</option>
+            </select>
+          </label>
+          <label>Wind <input id="wind" type="range" min="0" max="1" step="0.01" value="0.2"></label>
+          <label>Visibility <input id="visibility" type="range" min="0" max="1" step="0.01" value="0.9"></label>
+          <label>Jamming <input id="jamming" type="range" min="0" max="1" step="0.01" value="0.1"></label>
+          <label>Hazard intensity <input id="hazardIntensity" type="range" min="0" max="1" step="0.01" value="0.2"></label>
+          <button id="applySettings" type="button">Apply environment</button>
+        </section>
+      </div>
+    </aside>
+
+    <section class="center-panel" data-tour-id="mapPanel">
+      <div class="card map-card active" id="mapWrap"><canvas id="mapCanvas" width="1120" height="720"></canvas><div class="map-zoom-controls"><button id="zoomInBtn" class="zoom-btn" type="button">+</button><button id="zoomOutBtn" class="zoom-btn" type="button">−</button><button id="zoomResetBtn" class="zoom-btn" type="button">Reset</button></div></div>
+      <div class="card map-card" id="globeWrap">
+        <div id="globe"></div>
+        <div class="globe-legend"><span><b class="dot danger"></b>priority threat</span><span><b class="dot watch"></b>watchlist</span><span><b class="dot normal"></b>routine traffic</span><span>protected airspaces appear when zoomed in</span></div>
+        <div class="map-zoom-controls"><button id="zoomIn3DBtn" class="zoom-btn" type="button">+</button><button id="zoomOut3DBtn" class="zoom-btn" type="button">−</button><button id="zoomReset3DBtn" class="zoom-btn" type="button">Reset</button></div>
+        <div class="globe-pan-controls" aria-label="Rotate globe controls">
+          <div class="globe-pan-hint">Rotate globe</div>
+          <button class="pan-btn pan-up" data-globe-pan="up" type="button" aria-label="Rotate globe up">▲</button>
+          <button class="pan-btn pan-left" data-globe-pan="left" type="button" aria-label="Rotate globe left">◀</button>
+          <button class="pan-btn pan-center" data-globe-pan="reset" type="button" aria-label="Reset globe view">●</button>
+          <button class="pan-btn pan-right" data-globe-pan="right" type="button" aria-label="Rotate globe right">▶</button>
+          <button class="pan-btn pan-down" data-globe-pan="down" type="button" aria-label="Rotate globe down">▼</button>
+          <div class="globe-pan-hint small">Arrow keys work in 3D</div>
+        </div>
+        <div class="map-command-dock" aria-label="Map quick actions">
+          <button data-right-jump="inspect" type="button">Inspect selected</button>
+          <button data-right-jump="response" type="button">Ask advisor</button>
+          <button data-right-jump="events" type="button">Open log</button>
+          <button id="dockFocusSelected" type="button">Zoom selected</button>
+        </div>
+        <div id="globeFallback" class="fallback hidden">3D view needs internet access for Cesium and map imagery. The 2D view still works fully.</div>
+      </div>
+      <div class="map-footer card">
+        <div class="legend-item legend-blue"><span class="ring blue"></span><span>Protected area</span></div>
+        <div class="legend-item legend-amber"><span class="ring amber"></span><span>Restricted zone</span></div>
+        <div class="legend-item legend-red"><span class="ring red"></span><span>Hazard area</span></div>
+        <div class="legend-item legend-dash"><span class="dash"></span><span>Predicted future direction for the selected track</span></div>
+      </div>
+      <div id="scenarioReadout" class="scenario-readout card"></div>
+    </section>
+
+    <aside class="right-panel">
+      <div class="panel-mini-head"><span>Analysis workspace</span><button id="collapseRightInline" class="mini-icon-btn" type="button" aria-label="Hide analysis panel">›</button></div>
+      <div class="right-section-launchers">
+        <button class="launcher active" data-right-jump="inspect" type="button"><b>Inspect</b><span>Track evidence</span></button>
+        <button class="launcher hot" data-right-jump="response" type="button"><b>Advisor</b><span>Ask next step</span></button>
+        <button class="launcher" data-right-jump="events" type="button"><b>Log</b><span>Responses</span></button>
+      </div>
+      <div class="side-tabs compact-tabs">
+        <button class="side-tab active" data-right-view="inspect" type="button">Inspect</button>
+        <button class="side-tab" data-right-view="legend" type="button">Legend</button>
+        <button class="side-tab" data-right-view="events" type="button">Events</button>
+        <button class="side-tab" data-right-view="deepdive" type="button">Deep dive</button>
+        <button class="side-tab" data-right-view="response" type="button">AI Advisor</button>
+        <button class="side-tab" data-right-view="assistant" type="button">Project Q&A</button>
+      </div>
+
+      <div id="rightInspect" class="side-view active" data-tour-id="objectPanel">
+        <section class="card grow-card">
+          <div class="selection-header">
+            <div>
+              <h3>Selected object</h3>
+              <div id="selectionIntro" class="subtle">Start with Summary for a plain-language explanation, then open Sensors or Analysis for the evidence.</div>
+            </div>
+            <button id="removeObjectBtn" class="pill danger" type="button">Remove selected</button>
+          </div>
+          <label class="selector-label">Track
+            <select id="objectSelect"></select>
+          </label>
+          <div class="rename-row">
+            <input id="renameObjectInput" type="text" placeholder="Rename selected object, e.g. unknown northbound contact" />
+            <button id="renameObjectBtn" class="pill secondary" type="button">Rename</button>
+          </div>
+          <div class="selection-actions">
+            <button id="focusObject3DBtn" class="pill" type="button">Find in 3D</button>
+            <button id="focusObjectTopDownBtn" class="pill secondary" type="button">Above selected</button>
+          </div>
+          <div id="objectHeader"></div>
+          <div class="tabs">
+            <button class="tab active" data-tab="summary" type="button">Summary</button>
+            <button class="tab" data-tab="sensors" type="button">Sensors</button>
+            <button class="tab" data-tab="analysis" type="button">Analysis</button>
+            <button class="tab" data-tab="catalog" type="button">Catalog</button>
+            <button class="tab" data-tab="model" type="button">Model</button>
+          </div>
+          <div class="complexity-toggle">
+            <button id="simpleSensors" class="mini-toggle active" type="button">Simple</button>
+            <button id="complexSensors" class="mini-toggle" type="button">Complex</button>
+          </div>
+          <div id="tabContent"></div>
+        </section>
+      </div>
+
+      <div id="rightLegend" class="side-view hidden" data-tour-id="legendPanel">
+        <section class="card grow-card">
+          <h3>What am I seeing?</h3>
+          <div class="quick-read">
+            <div class="quick-read-title">Quick read</div>
+            <ol>
+              <li>Pick a scenario</li>
+              <li>Select a track</li>
+              <li>Read the Summary tab</li>
+              <li>Open Sensors or Analysis for deeper evidence</li>
+              <li>Switch to 3D for spatial context</li>
+            </ol>
+          </div>
+          <ul class="microcopy">
+            <li>The <b>solid blue ring</b> is the protected area.</li>
+            <li><b>Amber</b> marks a restricted no-fly zone.</li>
+            <li><b>Red</b> marks a hazard zone or degraded environment.</li>
+            <li>A <b>dashed trail</b> is the system's short-horizon path prediction.</li>
+            <li>Environmental overlays show weather, wind drift, and jamming activity.</li>
+          </ul>
+          <div class="source-strip" id="sourceStrip"></div>
+        </section>
+      </div>
+
+      <div id="rightDeepdive" class="side-view hidden">
+        <section class="card grow-card tech-card">
+          <h3>Technical deep dive</h3>
+          <div class="tab-intro">Optional reading for people who want the motivation, AI/ML, public-data, feature, and physics story.</div>
+          <div class="tech-mini-grid">
+            <div class="class-chip"><span class="k">Core stack</span><span class="v">Scenario simulation, sensor synthesis, feature extraction, scoring, ML, public-signature matching, 2D/3D visualization</span></div>
+            <div class="class-chip"><span class="k">Why Orion exists</span><span class="v">To connect simulation, sensor synthesis, feature extraction, scoring, ML, signature matching, and visualization inside one inspectable detection-and-analysis system.</span></div>
+            <div class="class-chip"><span class="k">Why layered?</span><span class="v">A layered design makes intermediate state visible: raw readings, derived features, fused threat logic, ML outputs, and reference matches can all be inspected separately.</span></div>
+          </div>
+          <h4>Motivation and goals</h4>
+          <ul class="tech-list">
+            <li>Build an end-to-end pipeline from object state to visible operator output</li>
+            <li>Expose intermediate reasoning instead of only returning a final label</li>
+            <li>Support a readable guided mode and a deeper technical inspection mode</li>
+            <li>Make the scene easy to perturb through scenarios, environment changes, and test-object injection</li>
+          </ul>
+          <h4>How I think about Orion</h4>
+          <p class="subtle">Orion is an interactive threat-detection and analysis system. It can also be viewed as a prototype decision-support agent because it interprets tracks, combines evidence, and explains its conclusions.</p>
+          <h4>Pipeline</h4>
+          <ol class="tech-list">
+            <li>Instantiate scenario tracks with class, state, and environment context</li>
+            <li>Advance each track through simplified motion logic and altitude behavior</li>
+            <li>Synthesize raw and proxy sensor readings for every track</li>
+            <li>Compute derived kinematic, geometric, and contextual features</li>
+            <li>Fuse rule-based threat logic, ML outputs, and public-signature matches</li>
+            <li>Render interpreted state in 2D/3D and emit event messages</li>
+          </ol>
+          <h4>AI / ML in Orion</h4>
+          <ul class="tech-list">
+            <li><b>Isolation Forest:</b> scores how abnormal a track looks in the current feature space</li>
+            <li><b>Random Forest:</b> predicts likely object labels from the multi-signal feature vector</li>
+            <li><b>KMeans:</b> groups similar movement patterns to expose behavior clusters</li>
+            <li><b>Feature importance and probabilities:</b> surface why the model leaned toward a given interpretation</li>
+          </ul>
+          <p class="subtle">The ML layer is used as a supporting analysis channel, not as a black-box replacement for the interpretable threat logic.</p>
+          <h4>Public-data-informed matching</h4>
+          <p class="subtle">Public reference profiles are treated as supporting evidence, not absolute truth. Orion compares observed readings and derived behavior against reference signatures, scores the best match, and exposes the comparison in the Catalog tab.</p>
+          <h4>Physics and environment</h4>
+          <ul class="tech-list">
+            <li>Object classes occupy different motion and altitude regimes</li>
+            <li>Wind, hazards, visibility loss, and jamming directly affect sensor quality and confidence</li>
+            <li>Distance-to-zone, closing speed, CPA, and TTZ are computed from propagated track state</li>
+            <li>The 3D globe shows visible-side tracks, US protected airspaces when zoomed in, and stronger highlighting for missiles, unknowns, and foreign/anomalous contacts</li>
+          </ul>
+          <h4>Best tabs to inspect</h4>
+          <ul class="tech-list">
+            <li><b>Sensors:</b> raw and derived readings</li>
+            <li><b>Analysis:</b> threat logic, ML, and clustering</li>
+            <li><b>Catalog:</b> signature matches and source evidence</li>
+            <li><b>Model:</b> the major analysis layers involved</li>
+          </ul>
+        </section>
+      </div>
+
+
+
+      <div id="rightResponse" class="side-view hidden">
+        <section class="card grow-card response-card advisor-card">
+          <div class="panel-head"><h3>AI Scenario Advisor</h3><div class="panel-head-actions"><button id="expandResponseBtn" class="pill secondary" type="button">Expand</button><button id="closeResponseBtn" class="pill secondary hidden" type="button">Close</button></div></div>
+          <p class="tab-intro">Ask the advisor like a commander would: what matters, where threats are, why a track is risky, what the scores mean, or what response options make sense.</p>
+          <div class="response-target" id="responseTarget">Current top priority appears here when tracks are loaded.</div>
+          <div id="advisorMessages" class="assistant-messages advisor-messages"></div>
+          <div class="assistant-input-row">
+            <input id="advisorInput" type="text" placeholder="Ask anything about the current simulation..." />
+            <button id="advisorAskBtn" type="button">Advise</button>
+          </div>
+          <div class="example-title">Example Questions:</div>
+          <div class="assistant-chips">
+            <button class="advisor-chip assistant-chip" data-question="What should we do right now based on the current scenario?" type="button">Recommend action</button>
+            <button class="advisor-chip assistant-chip" data-question="Where are the biggest threats right now, and why?" type="button">Threat map</button>
+            <button class="advisor-chip assistant-chip" data-question="Give me a command-level sitrep and recommended next steps." type="button">Command sitrep</button>
+          </div>
+          <div class="response-note strong">Quick-log buttons record a simulated response for the currently selected track. If none is selected, Orion uses the current highest-priority track. They do not execute anything real.</div>
+          <div class="response-grid">
+            <button class="response-btn secondary" data-response="monitor" type="button">Log: monitor only</button>
+            <button class="response-btn" data-response="increase_tracking" type="button">Log: raise sensor priority</button>
+            <button class="response-btn" data-response="identity_check" type="button">Log: identity / transponder check</button>
+            <button class="response-btn" data-response="contact_aircraft" type="button">Log: attempt comms</button>
+            <button class="response-btn" data-response="scramble_patrol" type="button">Log: dispatch patrol aircraft</button>
+            <button class="response-btn" data-response="airspace_advisory" type="button">Log: airspace advisory</button>
+            <button class="response-btn" data-response="evacuation_advisory" type="button">Log: civil protection advisory</button>
+            <button class="response-btn danger" data-response="simulate_intercept" type="button">Log: simulate intercept workflow</button>
+          </div>
+          <div class="subtle response-note">Decision-support simulation only. Recommendations are based on synthetic tracks, sensor proxies, threat score, ML assessment, scenario context, and an LLM-grounded advisor when configured.</div>
+        </section>
+      </div>
+
+      <div id="rightAssistant" class="side-view hidden">
+        <section class="card grow-card assistant-card">
+          <div class="panel-head"><h3>Project Q&amp;A Bot</h3><div class="panel-head-actions"><button id="expandAssistantBtn" class="pill secondary" type="button">Expand</button><button id="closeAssistantBtn" class="pill secondary hidden" type="button">Close</button></div></div>
+          <p class="tab-intro">Ask how Orion was built: pipeline, UI, sensors, scoring, ML, public-data integration, object families, limitations, file structure, or answer generation.</p>
+          <div id="assistantMessages" class="assistant-messages"></div>
+          <div class="assistant-input-row">
+            <input id="assistantInput" type="text" placeholder="Ask about the project..." />
+            <button id="assistantAskBtn" type="button">Ask</button>
+          </div>
+          <div class="example-title">Example Questions:</div>
+          <div class="assistant-chips">
+            <button class="assistant-chip" data-question="Explain how Orion's pipeline works from simulation to classification." type="button">How does Orion classify objects?</button>
+            <button class="assistant-chip" data-question="Explain exactly how Orion uses AI, machine learning, and model outputs in this project." type="button">How is AI and ML used here?</button>
+            <button class="assistant-chip" data-question="Explain how Orion uses public real-world data and reference profiles when identifying objects." type="button">How is public data used?</button>
+            <button class="assistant-chip" data-question="Explain how Ask Orion generates its answers and what knowledge it uses." type="button">How do you generate your answers?</button>
+          </div>
+        </section>
+      </div>
+
+      <div id="rightEvents" class="side-view hidden">
+        <section class="card grow-card">
+          <h3>Event timeline</h3>
+          <div id="timeline"></div>
+        </section>
+      </div>
+    </aside>
+  </main>
+
+  <div id="tourCard" class="tour-card hidden" role="dialog" aria-modal="true">
+    <div class="tour-step" id="tourStepLabel">Step 1 of 5</div>
+    <h3 id="tourTitle">Guided demo</h3>
+    <p id="tourBody"></p>
+    <div class="tour-actions">
+      <button id="tourSkip" type="button">Skip</button>
+      <button id="tourNext" type="button">Next</button>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      const btn = document.getElementById('closeHelp');
+      if (btn) {
+        btn.addEventListener('click', function(){
+          const ov = document.getElementById('helpOverlay');
+          if (ov) ov.classList.remove('show');
+          document.dispatchEvent(new CustomEvent('orion-start-demo'));
+        });
+      }
+    })();
+  </script>
+  <button id="assistantLauncher" class="assistant-launcher" type="button" aria-label="Open Ask Orion">💬</button>
+  <div id="panelBackdrop" class="panel-backdrop hidden" aria-hidden="true"></div>
+  <div id="globalTooltip" class="global-tooltip hidden" role="tooltip"></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>

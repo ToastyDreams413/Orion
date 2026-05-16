@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: orion-defense-simulator
+    runtime: python
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: OPENAI_ADVISOR_MODEL
+        value: gpt-4o-mini

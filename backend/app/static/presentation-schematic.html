@@ -1,4 +1,10 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Orion — Intro Slides</title><style>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Orion — Intro Slides</title>
+  <style>
     :root{
       --line:rgba(169,215,255,.22);--text:#eef7ff;--muted:#c6d7e6;--cyan:#72e8ff;--green:#91f7bf;--gold:#ffd775;--blue:#7b93ff;--shadow:0 20px 70px rgba(0,0,0,.35);
       --topA:rgba(64,142,255,.12);--topB:rgba(84,170,255,.25);--bottomA:rgba(89,225,157,.12);--bottomB:rgba(109,235,177,.25);--topNode1:rgba(17,43,84,.96);--topNode2:rgba(13,31,59,.98);--botNode1:rgba(16,58,52,.96);--botNode2:rgba(12,42,38,.98);
@@ -7,16 +13,17 @@
     html,body{margin:0;height:100%;overflow:hidden;color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:radial-gradient(circle at top left,#142d52 0,#081426 46%,#040a14 100%)}
     body:before{content:"";position:fixed;inset:0;pointer-events:none;background:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:42px 42px;opacity:.55}
     .deck{height:100%;position:relative}
-    .slide{position:absolute;inset:0;display:none;padding:5vh 5vw 7.5vh}
-    .slide.active{display:block;animation:fade .22s ease}
+    .slide{position:absolute;inset:0;display:none;padding:5vh 5vw 7.5vh;overflow-y:auto;overflow-x:hidden;padding-bottom:104px;overscroll-behavior:contain}
+    .slide.active{display:block;animation:fade .22s ease;min-height:100%}
     @keyframes fade{from{opacity:.35;transform:translateY(8px)}to{opacity:1;transform:none}}
+
     .center-slide{height:100%;display:grid;place-items:center;text-align:center}
     .orion-title{margin:0;font-size:min(18vh,180px);line-height:.9;letter-spacing:-.08em;font-weight:950;background:linear-gradient(90deg,var(--cyan),var(--green));-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 30px 90px rgba(114,232,255,.13)}
     .one-line{margin:30px auto 0;font-size:min(3.8vh,42px);color:#dcefff;font-weight:780;letter-spacing:-.015em;max-width:1050px}
     .standalone-note{margin:20px auto 0;max-width:860px;color:#b9cce0;font-size:min(2.15vh,23px);line-height:1.45}
     .title{margin:.2vh 0 2.2vh;text-align:center;font-size:min(6.6vh,72px);line-height:1.02;letter-spacing:-.055em;font-weight:950}
     .subtitle{margin:-.8vh auto 2.2vh;max-width:1040px;text-align:center;color:#c9dced;font-size:min(2.45vh,26px);line-height:1.35;font-weight:650}
-    .content{height:calc(100vh - 18vh);min-height:0}
+    .content{height:auto;min-height:calc(100vh - 22vh)}
     .card-grid{height:100%;display:grid;grid-template-columns:repeat(3,1fr);gap:22px;align-items:stretch}
     .grid2{height:100%;display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:stretch}
     .panel{border:1px solid var(--line);background:linear-gradient(180deg,rgba(10,22,40,.88),rgba(7,16,30,.97));box-shadow:var(--shadow);border-radius:28px;padding:28px;display:flex;flex-direction:column;justify-content:center}
@@ -25,41 +32,121 @@
     .panel ul{margin:6px 0 0;padding-left:1.12em}
     .panel li::marker{color:var(--cyan)}
     .tag{display:inline-block;width:max-content;margin-bottom:14px;padding:8px 13px;border-radius:999px;background:rgba(114,232,255,.11);border:1px solid rgba(114,232,255,.29);color:#dff8ff;font-size:min(1.9vh,20px);font-weight:900;letter-spacing:.03em}
-    .big-list{width:min(1120px,100%);margin:0 auto;border:1px solid var(--line);background:linear-gradient(180deg,rgba(10,22,40,.9),rgba(7,16,30,.98));box-shadow:var(--shadow);border-radius:34px;padding:34px 44px}
-    .big-list li{font-size:min(3.0vh,32px);line-height:1.35;color:#e3f3ff;margin:16px 0;font-weight:760}
+
     .steps{height:100%;display:grid;grid-template-columns:repeat(4,1fr);gap:18px;align-items:center}
     .step{min-height:48vh;border:1px solid var(--line);border-radius:26px;padding:24px;background:rgba(11,25,46,.78);box-shadow:0 18px 45px rgba(0,0,0,.22)}
     .numBadge{width:46px;height:46px;border-radius:15px;background:linear-gradient(135deg,var(--cyan),var(--green));color:#061020;font-weight:980;font-size:24px;display:grid;place-items:center;margin-bottom:20px}
     .step b{display:block;font-size:min(2.9vh,31px);line-height:1.12;margin-bottom:12px}
     .step span{font-size:min(2.1vh,22px);line-height:1.38;color:#cce0f1}
-        .flow-slide{padding:3.6vh 4vw}
+
+    .flow-slide{padding:3.6vh 4vw 104px;overflow-y:auto;overflow-x:hidden}
     .slide-title{margin:0 0 1.7vh;text-align:center;font-size:min(5.4vh,58px);line-height:1;letter-spacing:-.045em;font-weight:950}
-    .flow-canvas{position:relative;height:calc(100vh - 12.1vh);border-radius:30px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(10,22,40,.88),rgba(7,16,30,.97));box-shadow:var(--shadow);overflow:hidden}
+        .flow-canvas{position:relative;height:clamp(620px, calc(100vh - 16vh), 780px);border-radius:30px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(10,22,40,.88),rgba(7,16,30,.97));box-shadow:var(--shadow);overflow:hidden}
     .flow-bg{position:absolute;inset:0;background:radial-gradient(circle at 18% 18%,rgba(114,232,255,.10),transparent 28%),radial-gradient(circle at 82% 72%,rgba(145,247,191,.10),transparent 28%)}
 
     .layer{position:absolute;left:4%;width:92%;height:34%;border-radius:28px;border:1px solid rgba(255,255,255,.07)}
     .layer.top{top:10.5%;background:linear-gradient(180deg,var(--topA),rgba(10,22,40,.18));box-shadow:inset 0 0 0 1px rgba(64,142,255,.08)}
     .layer.bottom{top:55.5%;background:linear-gradient(180deg,var(--bottomA),rgba(10,22,40,.18));box-shadow:inset 0 0 0 1px rgba(89,225,157,.08)}
     .layer-label{position:absolute;left:1.3%;top:22px;padding:10px 16px;border-radius:999px;font-size:min(2.3vh,25px);font-weight:980;letter-spacing:.03em;z-index:3;text-shadow:0 2px 18px rgba(0,0,0,.38)}
+    .layer-help{
+      position:absolute;
+      left:50%;
+      top:5.25%;
+      transform:translate(-50%,-50%);
+      z-index:3;
+      color:#071220;
+      font-size:min(2.35vh,25px);
+      line-height:1.25;
+      font-weight:980;
+      letter-spacing:-.01em;
+      text-shadow:none;
+      padding:9px 18px;
+      border-radius:999px;
+      border:1px solid rgba(255,245,214,.92);
+      background:linear-gradient(135deg,rgba(255,215,117,.98),rgba(255,172,84,.94));
+      box-shadow:0 10px 26px rgba(0,0,0,.26),0 0 26px rgba(255,215,117,.32);
+      white-space:nowrap;
+      overflow:hidden;
+    }
+    .layer-help::after{
+      content:"";
+      position:absolute;
+      top:-40%;
+      bottom:-40%;
+      left:-35%;
+      width:18%;
+      transform:skewX(-22deg);
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.62),transparent);
+      opacity:0;
+      animation:hintGlint 6.8s ease-in-out infinite;
+      pointer-events:none;
+    }
+    @keyframes hintGlint{
+      0%,72%{left:-35%;opacity:0}
+      76%{opacity:.42}
+      92%{left:112%;opacity:.42}
+      96%,100%{left:112%;opacity:0}
+    }
     .layer.top .layer-label{background:var(--topB);color:#f7fbff;border:1px solid rgba(84,170,255,.46);box-shadow:0 6px 18px rgba(64,142,255,.18)}
     .layer.bottom .layer-label{background:var(--bottomB);color:#f7fbff;border:1px solid rgba(109,235,177,.46);box-shadow:0 6px 18px rgba(89,225,157,.18)}
-
     .flow-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
     .flow-svg line,.flow-svg path{vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round}
-
     .node{position:absolute;width:19.2%;height:16.5%;padding:14px 16px;border-radius:22px;border:1px solid rgba(169,215,255,.22);box-shadow:0 14px 34px rgba(0,0,0,.24);display:grid;grid-template-columns:42px 1fr;gap:12px;align-items:center;z-index:2}
     .node>.copy{display:flex;flex-direction:column;justify-content:center;height:100%}
     .node.top{background:linear-gradient(180deg,var(--topNode1),var(--topNode2))}
     .node.bottom{background:linear-gradient(180deg,var(--botNode1),var(--botNode2))}
-    .num{width:40px;height:40px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,var(--cyan),var(--green));color:#08111f;font-size:21px;font-weight:980}
-    .node b{display:block;font-size:min(2.55vh,28px);line-height:1.12;letter-spacing:-.02em;font-weight:920}
-
+    .node.flow-node{
+      cursor:pointer;
+      position:absolute;
+      transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease,filter .16s ease,background .16s ease;
+      user-select:none;
+      border-color:rgba(114,232,255,.42);
+      box-shadow:
+        0 14px 34px rgba(0,0,0,.24),
+        0 0 0 1px rgba(114,232,255,.12),
+        0 0 18px rgba(114,232,255,.075),
+        inset 0 -16px 30px rgba(114,232,255,.045);
+    }
+    .node.flow-node::before{
+      content:"";
+      position:absolute;
+      inset:5px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.07);
+      background:linear-gradient(135deg,rgba(255,255,255,.055),transparent 34%);
+      pointer-events:none;
+    }
+    .node.flow-node:hover,.node.flow-node:focus{
+      transform:translateY(-5px) scale(1.018);
+      border-color:rgba(114,232,255,.78);
+      box-shadow:
+        0 22px 52px rgba(0,0,0,.38),
+        0 0 0 3px rgba(114,232,255,.20),
+        0 0 30px rgba(114,232,255,.22),
+        inset 0 -16px 30px rgba(114,232,255,.065);
+      outline:none;
+      filter:brightness(1.12);
+    }
+    .node.flow-node:focus-visible{outline:3px solid rgba(114,232,255,.55);outline-offset:4px}
+    .num{width:clamp(32px,3.7vh,40px);height:clamp(32px,3.7vh,40px);border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,var(--cyan),var(--green));color:#08111f;font-size:21px;font-weight:980}
+    .node b{display:block;font-size:clamp(16px,2.35vh,28px);line-height:1.12;letter-spacing:-.02em;font-weight:920}
     .n1{left:5.2%;top:24.0%}.n2{left:28.6%;top:24.0%}.n3{left:52.0%;top:24.0%}.n4{left:75.4%;top:24.0%}
     .n5{left:5.2%;top:69.0%}.n6{left:28.6%;top:69.0%}.n7{left:52.0%;top:69.0%}.n8{left:75.4%;top:69.0%}
-    .loop-tag{position:absolute;left:50%;top:18.1%;transform:translateX(-50%);color:var(--gold);font-weight:940;font-size:min(2.2vh,24px);white-space:nowrap;z-index:3;text-shadow:0 2px 16px rgba(0,0,0,.65)}
+    .loop-tag{position:absolute;left:62.5%;top:16.3%;transform:translateX(-50%);color:var(--gold);font-weight:940;font-size:min(2.2vh,24px);white-space:nowrap;z-index:3;text-shadow:0 2px 16px rgba(0,0,0,.65)}
 
+    .flow-detail-backdrop{position:absolute;inset:0;z-index:20;display:none;align-items:center;justify-content:center;padding:28px;background:rgba(2,8,16,.45);backdrop-filter:blur(4px)}
+    .flow-detail-backdrop.show{display:flex}
+    .flow-detail-card{width:min(900px,92%);border:1px solid rgba(169,215,255,.32);background:linear-gradient(180deg,rgba(13,31,55,.97),rgba(7,16,30,.98));border-radius:30px;box-shadow:0 28px 90px rgba(0,0,0,.48);padding:28px 32px;position:relative}
+    .flow-detail-top{display:flex;align-items:center;gap:16px;margin-bottom:14px}
+    .flow-detail-number{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;color:#061020;font-size:25px;font-weight:980;background:linear-gradient(135deg,var(--cyan),var(--green));flex:0 0 auto}
+    .flow-detail-title{margin:0;font-size:min(3.4vh,38px);line-height:1.1;letter-spacing:-.03em}
+    .flow-detail-body{margin:10px 0 0;color:#d9ebfa;font-size:min(2.35vh,25px);line-height:1.42;font-weight:650}
+    .flow-detail-list{margin:18px 0 0;padding-left:1.15em}
+    .flow-detail-list li{color:#d9ebfa;font-size:min(2.15vh,23px);line-height:1.36;margin:8px 0}
+    .flow-detail-list li::marker{color:var(--cyan)}
+    .flow-detail-close{position:absolute;right:18px;top:16px;width:40px;height:40px;border-radius:999px;border:1px solid rgba(169,215,255,.30);background:rgba(7,16,30,.85);color:#eef7ff;font-size:28px;line-height:1;cursor:pointer}
+    .flow-detail-close:hover{background:rgba(20,44,78,.95)}
 
-    @media(max-width:1200px){.card-grid,.grid2,.steps{grid-template-columns:1fr 1fr}.flow-slide{padding:3vh 3vw}.slide-title,.title{font-size:min(5vh,52px)}.flow-canvas{height:calc(100vh - 11vh)}.node b{font-size:22px}.panel p,.panel li{font-size:min(2.1vh,22px)}}
     .deck-close{position:fixed;right:26px;top:22px;z-index:999;width:46px;height:46px;border-radius:999px;border:1px solid rgba(169,215,255,.30);background:rgba(7,16,30,.76);color:#eef7ff;text-decoration:none;display:grid;place-items:center;font-size:30px;font-weight:800;line-height:1;box-shadow:0 14px 36px rgba(0,0,0,.32);backdrop-filter:blur(8px)}
     .deck-close:hover{background:rgba(20,44,78,.90)}
     .slide-controls{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:999;display:flex;gap:12px;align-items:center}
@@ -67,13 +154,19 @@
     .slide-controls button:hover{background:rgba(20,44,78,.90)}
     .page-count{position:fixed;right:28px;bottom:26px;z-index:999;padding:9px 13px;border-radius:999px;border:1px solid rgba(169,215,255,.25);background:rgba(7,16,30,.72);color:#cfe8ff;font-size:14px;font-weight:800;letter-spacing:.04em;backdrop-filter:blur(8px)}
 
-    /* Fit-safety for standalone viewing: content can scroll instead of being clipped by viewport height. */
-    .slide{overflow-y:auto;overflow-x:hidden;padding-bottom:104px;overscroll-behavior:contain}
-    .slide.active{min-height:100%}
-    .content{height:auto;min-height:calc(100vh - 22vh)}
-    .flow-canvas{height:calc(100vh - 16vh)}
-    @media(max-height:820px){.slide{padding-top:3.2vh}.title{font-size:min(5.5vh,58px)}.subtitle{font-size:min(2.05vh,22px)}.panel{padding:22px}.panel p,.panel li{font-size:min(2.05vh,22px)}.step{min-height:0}.flow-canvas{height:calc(100vh - 17vh)}}
-</style></head><body>
+    @media(max-width:1200px){.card-grid,.grid2,.steps{grid-template-columns:1fr 1fr}.flow-slide{padding:3vh 3vw 104px}.slide-title,.title{font-size:min(5vh,52px)}.flow-canvas{height:clamp(620px, calc(100vh - 17vh), 780px)}.node b{font-size:clamp(13px,2.1vh,20px)}.panel p,.panel li{font-size:min(2.1vh,22px)}}
+    @media(max-height:820px){.slide{padding-top:3.2vh}.title{font-size:min(5.5vh,58px)}.subtitle{font-size:min(2.05vh,22px)}.panel{padding:22px}.panel p,.panel li{font-size:min(2.05vh,22px)}.step{min-height:0}.flow-canvas{height:clamp(620px, calc(100vh - 18vh), 780px)}}
+  
+    @media(max-height:620px){
+      .schem-title,.slide-title{font-size:clamp(28px,5.2vh,42px)}
+      .layer-help{top:6.2%;font-size:clamp(13px,2.4vh,18px);padding:7px 14px}
+      .overlay-idea{font-size:clamp(13px,2.2vh,18px);padding:11px 15px}
+      .loop-tag{font-size:clamp(12px,2.1vh,17px)}
+      .node{padding:10px 12px;gap:9px;grid-template-columns:clamp(32px,4vh,40px) 1fr}
+    }
+</style>
+</head>
+<body>
   <main class="deck">
     <section class="slide active">
       <div class="center-slide"><div><h1 class="orion-title">Orion</h1><div class="one-line">AI-assisted global threat detection and decision support</div><p class="standalone-note">This deck is written for someone exploring the demo on their own. Use the arrows to step through what the simulator is modeling, what each interface is doing, and how the AI advisor is grounded.</p></div></div>
@@ -83,9 +176,9 @@
       <h2 class="title">What You Are Looking At</h2>
       <p class="subtitle">Orion is a browser-based defense simulation that turns moving air/space objects into ranked risk, evidence, and advisory recommendations.</p>
       <div class="content card-grid">
-        <div class="panel"><span class="tag">Input</span><h3>Simulated world state</h3><p>Objects have positions, altitude, velocity, type, sensor readings, and scenario context such as weather or jamming.</p></div>
-        <div class="panel"><span class="tag">Reasoning</span><h3>Detection + scoring pipeline</h3><p>The backend converts raw motion and sensor data into interpretable features, threat scores, classifications, and recommended action categories.</p></div>
-        <div class="panel"><span class="tag">Output</span><h3>Human-readable decision support</h3><p>The dashboard shows what matters most, why it matters, and what the advisor recommends checking or doing next.</p></div>
+        <div class="panel"><span class="tag">Input</span><h3>Simulated world state</h3><p>Objects have position, altitude, velocity, acceleration, predicted path, sensor readings, confidence, and scenario context such as weather or jamming.</p></div>
+        <div class="panel"><span class="tag">Reasoning</span><h3>Detection + scoring pipeline</h3><p>The backend runs physics propagation, Kalman-lite tracking, sensor fusion, live/context enrichment, ML models, and a deterministic scoring core to produce interpretable risk.</p></div>
+        <div class="panel"><span class="tag">Output</span><h3>Human-readable decision support</h3><p>The dashboard and advisor show ranked tracks, score components, sensor evidence, uncertainty, and the next verification step.</p></div>
       </div>
     </section>
 
@@ -102,67 +195,214 @@
     <section class="slide">
       <h2 class="title">What the Simulation Tracks</h2>
       <div class="content grid2">
-        <div class="panel"><h3>Object-level signals</h3><ul><li>Class/type: aircraft, missile, satellite, debris, asteroid, unknown</li><li>Kinematics: speed, heading, altitude, acceleration, predicted path</li><li>Proximity: closest approach, time-to-zone, restricted-area intersection</li></ul></div>
-        <div class="panel"><h3>Context-level signals</h3><ul><li>Sensor confidence, transponder status, thermal/radiation/plume cues</li><li>Environment: weather, jamming, hazard zones, civilian exposure</li><li>Behavior patterns: swarm likelihood, anomaly pressure, intent/capability estimates</li></ul></div>
+        <div class="panel"><h3>Object-level signals</h3><ul><li>Class/type: aircraft, missile, satellite, debris, asteroid, unknown</li><li>Kinematics: speed, heading, altitude, acceleration, predicted path</li><li>Tracking: Kalman-lite smoothed state, dropout count, confidence, uncertainty</li><li>Proximity: closest approach, time-to-zone, restricted-area intersection</li></ul></div>
+        <div class="panel"><h3>Context-level signals</h3><ul><li>Sensor confidence, transponder status, thermal/radiation/plume cues</li><li>Live enrichment: OpenSky, CelesTrak, NASA/JPL, and signature-matching catalogs</li><li>Environment: weather, jamming, hazard zones, civilian exposure</li><li>Behavior patterns: swarm likelihood, anomaly pressure, intent/capability estimates</li></ul></div>
       </div>
     </section>
 
-<section class="slide flow-slide">
-<h2 class="slide-title">Orion Simulation Flow</h2>
-<div class="flow-canvas">
-<div class="flow-bg"></div>
-<div class="layer top"><div class="layer-label">Detection &amp; Inference</div></div>
-<div class="layer bottom"><div class="layer-label">Decision Support &amp; Action</div></div>
-<svg aria-hidden="true" class="flow-svg" preserveaspectratio="none" viewbox="0 0 100 100">
-<defs>
-<marker id="arrowWide" markerheight="12" markerwidth="8" orient="auto" refx="6.9" refy="5" viewbox="0 0 8 10"><path d="M 0 0 L 7 5 L 0 10 z" fill="#72e8ff"></path></marker>
-<marker id="arrowSmall" markerheight="7" markerwidth="7" orient="auto" refx="8.8" refy="5" viewbox="0 0 10 10"><path d="M 0 0 L 10 5 L 0 10 z" fill="#72e8ff"></path></marker>
-<marker id="arrowGold" markerheight="12" markerwidth="8" orient="auto" refx="6.9" refy="5" viewbox="0 0 8 10"><path d="M 0 0 L 7 5 L 0 10 z" fill="#ffd775"></path></marker>
-</defs>
-<line marker-end="url(#arrowWide)" stroke="#72e8ff" stroke-width="2.4" x1="24.4" x2="28.6" y1="32.25" y2="32.25"></line>
-<line marker-end="url(#arrowWide)" stroke="#72e8ff" stroke-width="2.4" x1="47.8" x2="52.0" y1="32.25" y2="32.25"></line>
-<line marker-end="url(#arrowWide)" stroke="#72e8ff" stroke-width="2.4" x1="71.2" x2="75.4" y1="32.25" y2="32.25"></line>
-<path d="M 85.0 40.5 L 85.0 50.8 Q 85.0 53.4 82.4 53.4 L 28.2 53.4 Q 25.2 53.4 23.4 69.0" fill="none" marker-end="url(#arrowSmall)" stroke="#72e8ff" stroke-width="2.4"></path>
-<line marker-end="url(#arrowWide)" stroke="#72e8ff" stroke-width="2.4" x1="24.4" x2="28.6" y1="77.25" y2="77.25"></line>
-<line marker-end="url(#arrowWide)" stroke="#72e8ff" stroke-width="2.4" x1="47.8" x2="52.0" y1="77.25" y2="77.25"></line>
-<line marker-end="url(#arrowWide)" stroke="#72e8ff" stroke-width="2.4" x1="71.2" x2="75.4" y1="77.25" y2="77.25"></line>
-<path d="M 85.0 23.0 C 76.2 16.2, 29.5 16.2, 19.8 23.0" fill="none" marker-end="url(#arrowGold)" stroke="#ffd775" stroke-dasharray="6 5" stroke-width="2.2"></path>
-</svg>
-<div class="loop-tag">Dynamic feedback loop</div>
-<div class="node top n1"><div class="num">1</div><div class="copy"><b>Object detected within global airspace</b></div></div>
-<div class="node top n2"><div class="num">2</div><div class="copy"><b>Sensors get readings from object</b></div></div>
-<div class="node top n3"><div class="num">3</div><div class="copy"><b>Readings pass into trained model</b></div></div>
-<div class="node top n4"><div class="num">4</div><div class="copy"><b>Model classifies object</b></div></div>
-<div class="node bottom n5"><div class="num">5</div><div class="copy"><b>User decides what to do about object</b></div></div>
-<div class="node bottom n6"><div class="num">6</div><div class="copy"><b>User asks AI advisor what to do</b></div></div>
-<div class="node bottom n7"><div class="num">7</div><div class="copy"><b>Advisor returns recommendation</b></div></div>
-<div class="node bottom n8"><div class="num">8</div><div class="copy"><b>Final verdict is determined</b></div></div>
-</div>
-</section>
+    <section class="slide flow-slide">
+      <h2 class="slide-title">Orion Simulation Flow</h2>
+      <div class="flow-canvas">
+        <div class="flow-bg"></div>
+        <div class="layer-help">Click any box to learn more</div>
+        <div class="layer top"><div class="layer-label">Detection &amp; Inference</div></div>
+        <div class="layer bottom"><div class="layer-label">Decision Support &amp; Action</div></div>
+
+        <svg aria-hidden="true" class="flow-svg" preserveAspectRatio="none" viewBox="0 0 100 100">
+          <defs>
+            <marker id="arrowWide" markerHeight="12" markerWidth="8" orient="auto" refX="6.9" refY="5" viewBox="0 0 8 10"><path d="M 0 0 L 7 5 L 0 10 z" fill="#72e8ff"></path></marker>
+            <marker id="arrowSmall" markerHeight="7" markerWidth="7" orient="auto" refX="8.8" refY="5" viewBox="0 0 10 10"><path d="M 0 0 L 10 5 L 0 10 z" fill="#72e8ff"></path></marker>
+            <marker id="arrowGold" markerHeight="12" markerWidth="8" orient="auto" refX="6.9" refY="5" viewBox="0 0 8 10"><path d="M 0 0 L 7 5 L 0 10 z" fill="#ffd775"></path></marker>
+          </defs>
+          <line marker-end="url(#arrowWide)" stroke="#72e8ff" stroke-width="2.4" x1="24.4" x2="28.6" y1="32.25" y2="32.25"></line>
+          <line marker-end="url(#arrowWide)" stroke="#72e8ff" stroke-width="2.4" x1="47.8" x2="52.0" y1="32.25" y2="32.25"></line>
+          <line marker-end="url(#arrowWide)" stroke="#72e8ff" stroke-width="2.4" x1="71.2" x2="75.4" y1="32.25" y2="32.25"></line>
+          <path d="M 85.0 40.5 L 85.0 50.8 Q 85.0 53.4 82.4 53.4 L 28.2 53.4 Q 25.2 53.4 23.4 69.0" fill="none" marker-end="url(#arrowSmall)" stroke="#72e8ff" stroke-width="2.4"></path>
+          <line marker-end="url(#arrowWide)" stroke="#72e8ff" stroke-width="2.4" x1="24.4" x2="28.6" y1="77.25" y2="77.25"></line>
+          <line marker-end="url(#arrowWide)" stroke="#72e8ff" stroke-width="2.4" x1="47.8" x2="52.0" y1="77.25" y2="77.25"></line>
+          <line marker-end="url(#arrowWide)" stroke="#72e8ff" stroke-width="2.4" x1="71.2" x2="75.4" y1="77.25" y2="77.25"></line>
+          <path class="loop-arrow" d="M 85.0 23.0 C 75.0 12.8, 48.0 12.8, 38.2 23.0" fill="none" stroke="#ffd775" stroke-dasharray="6 5" stroke-width="2.2" marker-end="url(#arrowGold)"/>
+        </svg>
+
+        <div class="loop-tag">Live Sensor Updates</div>
+        <div class="node top n1 flow-node" role="button" tabindex="0" data-step="1" aria-label="Learn more about step 1"><div class="num">1</div><div class="copy"><b>Object detected within global airspace</b></div></div>
+        <div class="node top n2 flow-node" role="button" tabindex="0" data-step="2" aria-label="Learn more about step 2"><div class="num">2</div><div class="copy"><b>Observation systems collect object data</b></div></div>
+        <div class="node top n3 flow-node" role="button" tabindex="0" data-step="3" aria-label="Learn more about step 3"><div class="num">3</div><div class="copy"><b>Data feeds into ML ensemble</b></div></div>
+        <div class="node top n4 flow-node" role="button" tabindex="0" data-step="4" aria-label="Learn more about step 4"><div class="num">4</div><div class="copy"><b>Object is classified and scored</b></div></div>
+        <div class="node bottom n5 flow-node" role="button" tabindex="0" data-step="5" aria-label="Learn more about step 5"><div class="num">5</div><div class="copy"><b>User decides what to do about object</b></div></div>
+        <div class="node bottom n6 flow-node" role="button" tabindex="0" data-step="6" aria-label="Learn more about step 6"><div class="num">6</div><div class="copy"><b>User asks AI advisor what to do</b></div></div>
+        <div class="node bottom n7 flow-node" role="button" tabindex="0" data-step="7" aria-label="Learn more about step 7"><div class="num">7</div><div class="copy"><b>Advisor returns recommendation</b></div></div>
+        <div class="node bottom n8 flow-node" role="button" tabindex="0" data-step="8" aria-label="Learn more about step 8"><div class="num">8</div><div class="copy"><b>Final verdict is determined</b></div></div>
+
+        <div class="flow-detail-backdrop" id="flowDetail" aria-hidden="true">
+          <div class="flow-detail-card" role="dialog" aria-modal="true" aria-labelledby="flowDetailTitle">
+            <button class="flow-detail-close" id="flowDetailClose" type="button" aria-label="Close detail">×</button>
+            <div class="flow-detail-top">
+              <div class="flow-detail-number" id="flowDetailNumber">1</div>
+              <h3 class="flow-detail-title" id="flowDetailTitle">Step title</h3>
+            </div>
+            <p class="flow-detail-body" id="flowDetailBody"></p>
+            <ul class="flow-detail-list" id="flowDetailList"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <section class="slide">
       <h2 class="title">Where the AI Fits</h2>
       <p class="subtitle">The advisor is not meant to invent facts. It is given a compact evidence packet from the live scenario and must ground its answer in that packet.</p>
       <div class="content card-grid">
         <div class="panel"><span class="tag">1</span><h3>Focus selection</h3><p>It identifies whether the user is asking about a named track, the selected object, or the highest-priority object in the scene.</p></div>
-        <div class="panel"><span class="tag">2</span><h3>Evidence packet</h3><p>The backend sends ranked tracks, score components, sensor evidence, confidence, and scenario conditions to the advisor.</p></div>
+        <div class="panel"><span class="tag">2</span><h3>Evidence packet</h3><p>The backend sends ranked tracks, score components, sensor evidence, confidence, scenario conditions, and live/context enrichment such as OpenSky, CelesTrak, NASA/JPL-style data, and signature matches.</p></div>
         <div class="panel"><span class="tag">3</span><h3>Constrained answer</h3><p>The final response returns a recommendation category, confidence, supporting evidence, and the next verification step.</p></div>
       </div>
     </section>
-</main>
+  </main>
 
   <a class="deck-close" href="/" aria-label="Close slides">×</a>
   <div class="slide-controls" aria-label="Slide navigation"><button id="prevSlide" type="button" aria-label="Previous slide">←</button><button id="nextSlide" type="button" aria-label="Next slide">→</button></div>
   <div class="page-count"><span id="pageNow">1</span> / <span id="pageTotal">1</span></div>
+
   <script>
     const slides=[...document.querySelectorAll('.slide')];
-    const pageNow=document.getElementById('pageNow'); const pageTotal=document.getElementById('pageTotal'); let i=0;
+    const pageNow=document.getElementById('pageNow');
+    const pageTotal=document.getElementById('pageTotal');
+    let i=0;
     if(pageTotal) pageTotal.textContent=slides.length;
-    function show(n){i=Math.max(0,Math.min(slides.length-1,n));slides.forEach((s,k)=>s.classList.toggle('active',k===i)); if(pageNow) pageNow.textContent=i+1;}
+
+    function show(n){
+      i=Math.max(0,Math.min(slides.length-1,n));
+      slides.forEach((s,k)=>s.classList.toggle('active',k===i));
+      if(pageNow) pageNow.textContent=i+1;
+    }
+
+    const flowDetails = {
+      "1": {
+            "title": "Object detected within global airspace",
+            "body": "Orion starts by creating or importing a track record, then keeps that object as shared state for the visual simulation, scoring pipeline, logs, and advisor packet.",
+            "bullets": [
+                  "Each track stores id, object family, latitude/longitude, altitude, velocity, heading, acceleration, predicted path, and scenario metadata.",
+                  "The scenario layer covers cases like drone swarm, ballistic approach, orbital debris, asteroid pass, aircraft intrusion, satellite anomaly, and unknown-object events.",
+                  "Because every module reads the same track state, the label on the globe, the risk score, and the advisor answer stay synchronized."
+            ]
+      },
+      "2": {
+            "title": "Observation systems collect object data",
+            "body": "The sensor layer produces noisy measurements first; Orion then turns those readings into fused estimates and confidence values used by later stages.",
+            "bullets": [
+                  "Signals include radar strength, optical confidence, thermal intensity, radiation, plume evidence, transponder status, jamming level, dropout count, and update delay.",
+                  "Kalman-lite tracking smooths position and velocity so the simulation does not overreact to one bad sample.",
+                  "The system preserves both raw flags and fused estimates, which lets the UI and advisor explain exactly which signals influenced the score."
+            ]
+      },
+      "3": {
+            "title": "Data feeds into ML ensemble",
+            "body": "The Python ML layer converts fused track state, sensor evidence, scenario context, and enrichment data into feature vectors for multiple scikit-learn models.",
+            "bullets": [
+                  "IsolationForest estimates anomaly pressure from motion, uncertainty, radiation, thermal, swarm, transponder, and time-to-zone features.",
+                  "RandomForestClassifier maps the fused feature vector into benign, suspicious, or critical behavior classes.",
+                  "KMeans groups tracks into behavior patterns so Orion can describe an object as part of a motion/signal cluster rather than only a numeric score.",
+                  "OpenSky/CelesTrak/NASA-JPL-style enrichment and signature-matching fields can be injected as additional context features for aircraft, orbital, and small-body cases."
+            ]
+      },
+      "4": {
+            "title": "Object is classified and scored",
+            "body": "Classification is combined with deterministic scoring, so the threat value is traceable instead of being a single opaque model output.",
+            "bullets": [
+                  "The C++ scoring engine combines intent, capability, environmental pressure, anomaly pressure, and confidence into an interpretable threat score.",
+                  "Urgency comes from closest point of approach, time-to-zone, zone intersection, directness, closing speed, and class-specific escalation rules.",
+                  "The output is a ranked track list with class, score components, confidence, and evidence for the dashboard and advisor."
+            ]
+      },
+      "5": {
+            "title": "User decides what to do about object",
+            "body": "The dashboard exposes the track, model evidence, and predicted motion so the user can inspect the situation before accepting any recommendation.",
+            "bullets": [
+                  "The interface shows a 3D globe, track labels, selected-object details, score breakdowns, sensor evidence, scenario controls, and logs.",
+                  "The user can compare visible motion against the score, confidence, and sensor flags instead of trusting one label blindly.",
+                  "This keeps Orion as decision support, not autonomous action."
+            ]
+      },
+      "6": {
+            "title": "User asks AI advisor what to do",
+            "body": "The advisor first resolves scope: a named track, the currently selected object, the highest-priority object, or a project-architecture question.",
+            "bullets": [
+                  "For scenario questions, the backend builds a compact JSON packet with ranked tracks, score components, ML outputs, confidence, TTZ, CPA, area, and sensor evidence.",
+                  "For project questions, the RAG-based Q&A path retrieves architecture/component context before generation.",
+                  "Scope enforcement prevents the advisor from inventing tracks or using facts outside the current packet."
+            ]
+      },
+      "7": {
+            "title": "Advisor returns recommendation",
+            "body": "The LLM acts as a grounded explanation layer over structured state, not as the main detector or score generator.",
+            "bullets": [
+                  "Allowed categories include monitor, increase tracking, identity check, advisory, patrol, civil protection, intercept workflow, and stand down.",
+                  "A useful answer must cite concrete evidence such as track id, score, confidence, sensor flags, area, TTZ, CPA, and model class.",
+                  "Low-temperature generation keeps the response consistent, concise, and tied to the packet."
+            ]
+      },
+      "8": {
+            "title": "Final verdict is determined",
+            "body": "The final simulated decision combines deterministic scoring, ML outputs, sensor evidence, advisor reasoning, and human review.",
+            "bullets": [
+                  "The log preserves what Orion knew at decision time: state, score, uncertainty, selected recommendation, and evidence.",
+                  "The current project continuously updates sensor values; a stronger version would reuse outcomes to change future sensing or scoring behavior.",
+                  "That distinction matters: live updating becomes a feedback loop only when past outputs alter later actions."
+            ]
+      }
+};
+
+    const flowDetail=document.getElementById('flowDetail');
+    const flowDetailClose=document.getElementById('flowDetailClose');
+    const flowDetailNumber=document.getElementById('flowDetailNumber');
+    const flowDetailTitle=document.getElementById('flowDetailTitle');
+    const flowDetailBody=document.getElementById('flowDetailBody');
+    const flowDetailList=document.getElementById('flowDetailList');
+
+    function openFlowDetail(step){
+      const data=flowDetails[step];
+      if(!data || !flowDetail) return;
+      flowDetailNumber.textContent=step;
+      flowDetailTitle.textContent=data.title;
+      flowDetailBody.textContent=data.body;
+      flowDetailList.innerHTML=data.bullets.map(item=>`<li>${item}</li>`).join('');
+      flowDetail.classList.add('show');
+      flowDetail.setAttribute('aria-hidden','false');
+      flowDetailClose?.focus();
+    }
+
+    function closeFlowDetail(){
+      if(!flowDetail) return;
+      flowDetail.classList.remove('show');
+      flowDetail.setAttribute('aria-hidden','true');
+    }
+
+    document.querySelectorAll('.flow-node').forEach(node=>{
+      node.addEventListener('click',()=>openFlowDetail(node.dataset.step));
+      node.addEventListener('keydown',e=>{
+        if(e.key==='Enter' || e.key===' '){
+          e.preventDefault();
+          openFlowDetail(node.dataset.step);
+        }
+      });
+    });
+
+    flowDetailClose?.addEventListener('click',closeFlowDetail);
+    flowDetail?.addEventListener('click',e=>{if(e.target===flowDetail) closeFlowDetail();});
+
     document.getElementById('prevSlide')?.addEventListener('click',()=>show(i-1));
     document.getElementById('nextSlide')?.addEventListener('click',()=>show(i+1));
-    window.addEventListener('keydown',e=>{if(['ArrowRight',' ','PageDown'].includes(e.key)){e.preventDefault();show(i+1)} if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();show(i-1)} if(e.key==='Escape'){e.preventDefault();window.location.href='/'}});
+    window.addEventListener('keydown',e=>{
+      if(['ArrowRight','PageDown'].includes(e.key)){e.preventDefault();show(i+1)}
+      if(e.key===' ' && !flowDetail?.classList.contains('show')){e.preventDefault();show(i+1)}
+      if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();show(i-1)}
+      if(e.key==='Escape'){
+        e.preventDefault();
+        if(flowDetail?.classList.contains('show')) closeFlowDetail();
+        else window.location.href='/';
+      }
+    });
     show(0);
   </script>
-
-</body></html>
+</body>
+</html>

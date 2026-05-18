@@ -167,6 +167,120 @@
       .loop-tag{font-size:clamp(12px,2.1vh,17px)}
       .node{padding:10px 12px;gap:9px;grid-template-columns:clamp(32px,4vh,40px) 1fr}
     }
+
+
+    /* Dynamic feedback popup diagram — final full-screen version */
+    body.feedback-popup-open .slide-controls,
+    body.feedback-popup-open .page-count{
+      opacity:0 !important;
+      pointer-events:none !important;
+    }
+    body.feedback-popup-open .schem-title{
+      opacity:.04 !important;
+      filter:saturate(.25) brightness(.45) !important;
+    }
+    body.feedback-popup-open .flow-detail-backdrop{
+      position:fixed !important;
+      inset:0 !important;
+      z-index:3000 !important;
+      padding:5px !important;
+      background:rgba(2,8,16,.82) !important;
+      backdrop-filter:blur(8px) !important;
+    }
+    body.feedback-popup-open .flow-detail-card.feedback-mode{
+      width:calc(100vw - 10px) !important;
+      height:calc(100vh - 10px) !important;
+      max-height:none !important;
+      overflow-y:auto !important;
+      padding:30px 42px 24px !important;
+      border-radius:28px !important;
+    }
+    body.feedback-popup-open .flow-detail-card.feedback-mode .flow-detail-title{
+      font-size:clamp(34px,3.8vh,46px) !important;
+      line-height:1.05 !important;
+    }
+    body.feedback-popup-open .flow-detail-card.feedback-mode .flow-detail-body{
+      font-size:clamp(20px,2.35vh,27px) !important;
+      line-height:1.34 !important;
+      margin-top:12px !important;
+    }
+    body.feedback-popup-open .flow-detail-card.feedback-mode .flow-detail-list{
+      margin-top:18px !important;
+      margin-bottom:0 !important;
+    }
+    body.feedback-popup-open .flow-detail-card.feedback-mode .flow-detail-list li{
+      font-size:clamp(18px,2.08vh,23px) !important;
+      line-height:1.28 !important;
+      margin:7px 0 !important;
+    }
+    .feedback-diagram{display:none;margin-top:32px}
+    .flow-detail-card.feedback-mode .feedback-diagram{display:block !important}
+    .feedback-diagram-inner{
+      position:relative !important;
+      height:250px !important;
+      margin-top:6px !important;
+      border:1px solid rgba(113,228,255,.30) !important;
+      background:radial-gradient(circle at 50% 30%,rgba(72,255,156,.08),transparent 35%),linear-gradient(180deg,rgba(6,15,29,.76),rgba(3,9,19,.94)) !important;
+      border-radius:26px !important;
+      padding:16px 22px !important;
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.04),0 18px 44px rgba(0,0,0,.22) !important;
+      overflow:hidden !important;
+    }
+    .feedback-svg{
+      position:absolute !important;
+      inset:0 !important;
+      width:100% !important;
+      height:100% !important;
+      pointer-events:none !important;
+      z-index:1 !important;
+    }
+    .feedback-box{
+      position:absolute !important;
+      width:25% !important;
+      min-height:70px !important;
+      border:1px solid rgba(113,228,255,.36) !important;
+      background:rgba(113,228,255,.08) !important;
+      border-radius:18px !important;
+      padding:12px 16px !important;
+      display:grid !important;
+      place-items:center !important;
+      text-align:center !important;
+      font-weight:900 !important;
+      color:#eaf8ff !important;
+      font-size:clamp(15px,1.7vh,20px) !important;
+      line-height:1.18 !important;
+      box-shadow:0 10px 24px rgba(0,0,0,.22) !important;
+      z-index:2 !important;
+    }
+    .feedback-observe{left:3.5% !important;top:28px !important;}
+    .feedback-core{
+      left:37.5% !important;
+      top:28px !important;
+      border-color:rgba(72,255,156,.74) !important;
+      background:linear-gradient(180deg,rgba(16,70,56,.98),rgba(10,45,39,.98)) !important;
+      color:#effff8 !important;
+      box-shadow:0 10px 24px rgba(0,0,0,.22),0 0 28px rgba(72,255,156,.20) !important;
+    }
+    .feedback-monitor{left:71.5% !important;top:28px !important;}
+    .feedback-rescan{
+      left:3.5% !important;
+      top:164px !important;
+      border-color:rgba(255,215,117,.66) !important;
+      background:linear-gradient(180deg,rgba(77,55,17,.96),rgba(47,34,12,.98)) !important;
+      color:#fff6da !important;
+    }
+    .feedback-newdata{left:37.5% !important;top:164px !important;}
+    .feedback-update{left:71.5% !important;top:164px !important;}
+    .feedback-caption{display:none !important}
+    @media(max-width:980px){
+      body.feedback-popup-open .flow-detail-card.feedback-mode{height:calc(100vh - 10px) !important;overflow-y:auto !important;}
+      .flow-detail-card.feedback-mode .feedback-diagram-inner{height:auto !important;min-height:0 !important;padding:18px !important;}
+      .feedback-svg{display:none !important;}
+      .feedback-box{position:relative !important;left:auto !important;top:auto !important;width:100% !important;margin:10px 0 !important;}
+      .feedback-box:not(:last-of-type)::after{content:"↓";display:block;color:#48ff9c;font-size:26px;margin:10px 0 -6px;}
+      .feedback-caption{position:relative !important;left:auto !important;bottom:auto !important;transform:none !important;width:100% !important;margin-top:14px !important;}
+    }
+
 </style>
 </head>
 <body>
@@ -251,7 +365,7 @@
           <div class="node bottom n7 flow-node" role="button" tabindex="0" data-step="7" aria-label="Learn more about step 7"><div class="num2">7</div><div class="copy"><b>Advisor returns recommendation</b></div></div>
           <div class="node bottom n8 flow-node" role="button" tabindex="0" data-step="8" aria-label="Learn more about step 8"><div class="num2">8</div><div class="copy"><b>Final verdict is determined</b></div></div>
           <div class="overlay-top">
-            <div class="overlay-idea custom-sensor" role="button" tabindex="0" data-addon="custom-sensor" aria-label="Learn more about custom sensor system">custom sensor system</div>
+            <div class="overlay-idea custom-sensor" role="button" tabindex="0" data-addon="custom-sensor" aria-label="Learn more about custom observation system">custom observation system</div>
             <div class="overlay-idea feedback-loop" role="button" tabindex="0" data-addon="feedback-loop" aria-label="Learn more about dynamic feedback loop">dynamic feedback loop</div>
             <div class="overlay-idea extra-data" role="button" tabindex="0" data-addon="extra-data" aria-label="Learn more about extra data">extra data</div>
           </div>
@@ -283,202 +397,371 @@
   <div class="page-count"><span id="pageNow">1</span> / <span id="pageTotal">1</span></div>
 
   <script>
-    const slides=[...document.querySelectorAll('.slide')];
-    const pageNow=document.getElementById('pageNow');
-    const pageTotal=document.getElementById('pageTotal');
-    let i=0, schematicState=0; const schematicSlideIndex=4; const flowCanvas=document.getElementById('flowCanvas');
-    if(pageTotal) pageTotal.textContent=slides.length;
+(function(){
+  const slides=[...document.querySelectorAll('.slide')];
+  const pageNow=document.getElementById('pageNow');
+  const pageTotal=document.getElementById('pageTotal');
+  const flowCanvas=document.getElementById('flowCanvas');
+  const schematicSlideIndex=4;
 
-    const flowDetails = {
-      "1": {
-            "title": "Object detected within global airspace",
-            "body": "Orion starts by creating or importing a track record, then keeps that object as shared state for the visual simulation, scoring pipeline, logs, and advisor packet.",
-            "bullets": [
-                  "Each track stores id, object family, latitude/longitude, altitude, velocity, heading, acceleration, predicted path, and scenario metadata.",
-                  "The scenario layer covers cases like drone swarm, ballistic approach, orbital debris, asteroid pass, aircraft intrusion, satellite anomaly, and unknown-object events.",
-                  "Because every module reads the same track state, the label on the globe, the risk score, and the advisor answer stay synchronized."
-            ]
-      },
-      "2": {
-            "title": "Observation systems collect object data",
-            "body": "The sensor layer produces noisy measurements first; Orion then turns those readings into fused estimates and confidence values used by later stages.",
-            "bullets": [
-                  "Signals include radar strength, optical confidence, thermal intensity, radiation, plume evidence, transponder status, jamming level, dropout count, and update delay.",
-                  "Kalman-lite tracking smooths position and velocity so the simulation does not overreact to one bad sample.",
-                  "The system preserves both raw flags and fused estimates, which lets the UI and advisor explain exactly which signals influenced the score."
-            ]
-      },
-      "3": {
-            "title": "Data feeds into ML ensemble",
-            "body": "The Python ML layer converts fused track state, sensor evidence, scenario context, and enrichment data into feature vectors for multiple scikit-learn models.",
-            "bullets": [
-                  "IsolationForest estimates anomaly pressure from motion, uncertainty, radiation, thermal, swarm, transponder, and time-to-zone features.",
-                  "RandomForestClassifier maps the fused feature vector into benign, suspicious, or critical behavior classes.",
-                  "KMeans groups tracks into behavior patterns so Orion can describe an object as part of a motion/signal cluster rather than only a numeric score.",
-                  "OpenSky/CelesTrak/NASA-JPL-style enrichment and signature-matching fields can be injected as additional context features for aircraft, orbital, and small-body cases."
-            ]
-      },
-      "4": {
-            "title": "Object is classified and scored",
-            "body": "Classification is combined with deterministic scoring, so the threat value is traceable instead of being a single opaque model output.",
-            "bullets": [
-                  "The C++ scoring engine combines intent, capability, environmental pressure, anomaly pressure, and confidence into an interpretable threat score.",
-                  "Urgency comes from closest point of approach, time-to-zone, zone intersection, directness, closing speed, and class-specific escalation rules.",
-                  "The output is a ranked track list with class, score components, confidence, and evidence for the dashboard and advisor."
-            ]
-      },
-      "5": {
-            "title": "User decides what to do about object",
-            "body": "The dashboard exposes the track, model evidence, and predicted motion so the user can inspect the situation before accepting any recommendation.",
-            "bullets": [
-                  "The interface shows a 3D globe, track labels, selected-object details, score breakdowns, sensor evidence, scenario controls, and logs.",
-                  "The user can compare visible motion against the score, confidence, and sensor flags instead of trusting one label blindly.",
-                  "This keeps Orion as decision support, not autonomous action."
-            ]
-      },
-      "6": {
-            "title": "User asks AI advisor what to do",
-            "body": "The advisor first resolves scope: a named track, the currently selected object, the highest-priority object, or a project-architecture question.",
-            "bullets": [
-                  "For scenario questions, the backend builds a compact JSON packet with ranked tracks, score components, ML outputs, confidence, TTZ, CPA, area, and sensor evidence.",
-                  "For project questions, the RAG-based Q&A path retrieves architecture/component context before generation.",
-                  "Scope enforcement prevents the advisor from inventing tracks or using facts outside the current packet."
-            ]
-      },
-      "7": {
-            "title": "Advisor returns recommendation",
-            "body": "The LLM acts as a grounded explanation layer over structured state, not as the main detector or score generator.",
-            "bullets": [
-                  "Allowed categories include monitor, increase tracking, identity check, advisory, patrol, civil protection, intercept workflow, and stand down.",
-                  "A useful answer must cite concrete evidence such as track id, score, confidence, sensor flags, area, TTZ, CPA, and model class.",
-                  "Low-temperature generation keeps the response consistent, concise, and tied to the packet."
-            ]
-      },
-      "8": {
-            "title": "Final verdict is determined",
-            "body": "The final simulated decision combines deterministic scoring, ML outputs, sensor evidence, advisor reasoning, and human review.",
-            "bullets": [
-                  "The log preserves what Orion knew at decision time: state, score, uncertainty, selected recommendation, and evidence.",
-                  "The current project continuously updates sensor values; a stronger version would reuse outcomes to change future sensing or scoring behavior.",
-                  "That distinction matters: live updating becomes a feedback loop only when past outputs alter later actions."
-            ]
-      }
-};
+  let i=0;
+  let schematicState=0;
 
-    const addonDetails = {
-      "feedback-loop": {
-            addon: true,
-            "title": "Dynamic feedback loop",
-            "body": "This expansion would make Orion adaptive, not merely live-updating. The system would use uncertainty, sensor disagreement, and previous decisions to change what it observes or prioritizes next.",
-            "bullets": [
-                  "Examples: request a rescan when confidence drops, increase sampling for fast TTZ objects, or switch to a different sensor mix when jamming or dropout rises.",
-                  "The feedback path would target the Live Sensor Updates loop: later observations would be selected based on what the last model pass found uncertain or dangerous.",
-                  "Operator verdicts could also tune thresholds over time, separating normal scenario drift from repeated false positives or missed-risk patterns."
-            ]
-      },
-      "custom-sensor": {
-            addon: true,
-            "title": "Custom sensor system",
-            "body": "This would expand the current simulated sensor layer into separate sensor modules before the tracking/fusion stage.",
-            "bullets": [
-                  "Radar, optical, thermal, radiation, plume, transponder, telescope, and jamming modules would output value, confidence, delay, dropout, and noise independently.",
-                  "Those outputs feed box 2, where Kalman-lite tracking and fusion convert raw measurements into cleaner position/velocity estimates and evidence flags.",
-                  "The benefit is traceability: Orion can show whether the score changed because of motion, thermal/plume evidence, radiation, transponder mismatch, or sensor uncertainty."
-            ]
-      },
-      "extra-data": {
-            addon: true,
-            "title": "Extra data",
-            "body": "This expansion would let a real team attach its own data sources, not just generic public enrichment. A defense or aerospace group could connect aircraft, missile, satellite, route, or threat-reference datasets that only that organization has.",
-            "bullets": [
-                  "Examples include internal aircraft registries, missile signature tables, radar cross-section libraries, known route/corridor data, satellite catalogs, restricted-zone watchlists, and prior incident archives.",
-                  "Those sources would be joined onto live tracks as structured lookup results and model features, then consumed by the ML ensemble, C++ scorer, and advisor packet.",
-                  "Instead of saying only 'unknown fast object,' Orion could compare the track against known platform families, expected behavior envelopes, or past anomalous patterns from the team's records."
-            ]
-      },
-      "knowledge-bases": {
-            addon: true,
-            "title": "Specialized knowledge bases",
-            "body": "This would make the advisor domain-specific without letting it invent live facts. The live state would still come from Orion, while background procedures and reference material would come from a controlled knowledge base.",
-            "bullets": [
-                  "A team could connect internal manuals, escalation playbooks, sensor interpretation guides, aircraft/missile references, or train/fine-tune an advisor model on approved defense material.",
-                  "RAG retrieval could explain why a signature matters, what verification step is standard, or which response categories are allowed under a given operating rule.",
-                  "The advisor would separate live evidence from reference knowledge: 'this track has these signals' versus 'the playbook says these signals require this next check.'"
-            ]
-      },
-      "agentic-advisor": {
-            addon: true,
-            "title": "Agentic advisor",
-            "body": "This would turn the advisor from a one-shot answerer into a multi-step investigation agent that actively gathers and compares evidence before responding.",
-            "bullets": [
-                  "The agent could inspect top-ranked tracks, compare score deltas, query catalogs, check sensor disagreement, retrieve similar cases, and run counterfactual score checks.",
-                  "It could call tools such as rescan request, catalog lookup, log search, route comparison, similar-incident retrieval, and missing-evidence detection before writing a recommendation.",
-                  "The final response would include what it checked, what uncertainty still matters, what action category it recommends, and what still requires human approval."
-            ]
-      }
-};
+  if(pageTotal) pageTotal.textContent=slides.length;
 
-    const flowDetail=document.getElementById('flowDetail');
-    const flowDetailClose=document.getElementById('flowDetailClose');
-    const flowDetailNumber=document.getElementById('flowDetailNumber');
-    const flowDetailTitle=document.getElementById('flowDetailTitle');
-    const flowDetailBody=document.getElementById('flowDetailBody');
-    const flowDetailList=document.getElementById('flowDetailList');
-
-    function applySchematic(){
-      if(!flowCanvas) return;
-      flowCanvas.classList.toggle('highlight-top', schematicState===1);
-      flowCanvas.classList.toggle('highlight-bottom', schematicState===2);
-      flowCanvas.classList.toggle('addons-visible', schematicState>0);
+  const flowDetails = {
+    "1": {
+      title: "Object detected within global airspace",
+      body: "Orion starts by creating or importing a track record, then keeps that object as shared state for the visual simulation, scoring pipeline, logs, and advisor packet.",
+      bullets: [
+        "Each track stores id, object family, latitude/longitude, altitude, velocity, heading, acceleration, predicted path, and scenario metadata.",
+        "The scenario layer covers cases like drone swarm, ballistic approach, orbital debris, asteroid pass, aircraft intrusion, satellite anomaly, and unknown-object events.",
+        "Because every module reads the same track state, the label on the globe, the risk score, and the advisor answer stay synchronized."
+      ]
+    },
+    "2": {
+      title: "Observation systems collect object data",
+      body: "The sensor layer produces noisy measurements first; Orion then turns those readings into fused estimates and confidence values used by later stages.",
+      bullets: [
+        "Signals include radar strength, optical confidence, thermal intensity, radiation, plume evidence, transponder status, jamming level, dropout count, and update delay.",
+        "Kalman-lite tracking smooths position and velocity so the simulation does not overreact to one bad sample.",
+        "The system preserves both raw flags and fused estimates, which lets the UI and advisor explain exactly which signals influenced the score."
+      ]
+    },
+    "3": {
+      title: "Data feeds into ML ensemble",
+      body: "The Python ML layer converts fused track state, sensor evidence, scenario context, and enrichment data into feature vectors for multiple scikit-learn models.",
+      bullets: [
+        "IsolationForest estimates anomaly pressure from motion, uncertainty, radiation, thermal, swarm, transponder, and time-to-zone features.",
+        "RandomForestClassifier maps the fused feature vector into benign, suspicious, or critical behavior classes.",
+        "KMeans groups tracks into behavior patterns so Orion can describe an object as part of a motion/signal cluster rather than only a numeric score.",
+        "OpenSky/CelesTrak/NASA-JPL-style enrichment and signature-matching fields can be injected as additional context features for aircraft, orbital, and small-body cases."
+      ]
+    },
+    "4": {
+      title: "Object is classified and scored",
+      body: "Classification is combined with deterministic scoring, so the threat value is traceable instead of being a single opaque model output.",
+      bullets: [
+        "The C++ scoring engine combines intent, capability, environmental pressure, anomaly pressure, and confidence into an interpretable threat score.",
+        "Urgency comes from closest point of approach, time-to-zone, zone intersection, directness, closing speed, and class-specific escalation rules.",
+        "The output is a ranked track list with class, score components, confidence, and evidence for the dashboard and advisor."
+      ]
+    },
+    "5": {
+      title: "User decides what to do about object",
+      body: "The dashboard exposes the track, model evidence, and predicted motion so the user can inspect the situation before accepting any recommendation.",
+      bullets: [
+        "The interface shows a 3D globe, track labels, selected-object details, score breakdowns, sensor evidence, scenario controls, and logs.",
+        "The user can compare visible motion against the score, confidence, and sensor flags instead of trusting one label blindly.",
+        "This keeps Orion as decision support, not autonomous action."
+      ]
+    },
+    "6": {
+      title: "User asks AI advisor what to do",
+      body: "The advisor first resolves scope: a named track, the currently selected object, the highest-priority object, or a project-architecture question.",
+      bullets: [
+        "For scenario questions, the backend builds a compact JSON packet with ranked tracks, score components, ML outputs, confidence, time-to-zone, closest point of approach, area, and sensor evidence.",
+        "For project questions, the RAG-based Q&A path retrieves architecture/component context before generation.",
+        "Scope enforcement prevents the advisor from inventing tracks or using facts outside the current packet."
+      ]
+    },
+    "7": {
+      title: "Advisor returns recommendation",
+      body: "The LLM acts as a grounded explanation layer over structured state, not as the main detector or score generator.",
+      bullets: [
+        "Allowed categories include monitor, increase tracking, identity check, advisory, patrol, civil protection, intercept workflow, and stand down.",
+        "A useful answer must cite concrete evidence such as track id, score, confidence, sensor flags, area, time-to-zone, closest point of approach, and model class.",
+        "Low-temperature generation keeps the response consistent, concise, and tied to the packet."
+      ]
+    },
+    "8": {
+      title: "Final verdict is determined",
+      body: "The final simulated decision combines deterministic scoring, ML outputs, sensor evidence, advisor reasoning, and human review.",
+      bullets: [
+        "The log preserves what Orion knew at decision time: state, score, uncertainty, selected recommendation, and evidence.",
+        "The current project continuously updates sensor values; a stronger version would reuse outcomes to change future sensing or scoring behavior.",
+        "That distinction matters: live updating becomes a feedback loop only when past outputs alter later actions."
+      ]
     }
-    function show(n){ i=Math.max(0,Math.min(slides.length-1,n)); slides.forEach((s,k)=>s.classList.toggle('active',k===i)); if(pageNow) pageNow.textContent=i+1; }
-    function openDetail(data, badge){
-      if(!data || !flowDetail) return;
-      const card=flowDetail.querySelector('.flow-detail-card');
-      card?.classList.toggle('addon-mode', !!data.addon);
-      flowDetailNumber.textContent=data.addon ? '' : (badge || data.badge || '•');
-      flowDetailTitle.textContent=data.title;
-      flowDetailBody.textContent=data.body;
-      flowDetailList.innerHTML=(data.bullets||[]).map(item=>`<li>${item}</li>`).join('');
-      flowDetail.classList.add('show');
-      flowDetail.setAttribute('aria-hidden','false');
-      flowDetailClose?.focus();
+  };
+
+  const addonDetails = {
+    "feedback-loop": {
+      addon: true,
+      diagram: true,
+      title: "Dynamic feedback loop",
+      body: "This expansion would turn Orion from a live-updating display into an adaptive tracking system. Instead of treating every observation as an isolated snapshot, the system would preserve object history, monitor confidence continuously, and use that memory to decide when the object needs closer observation or a new scoring pass.",
+      bullets: [
+        "The AI Fusion Core would combine fused sensor data, motion history, classification results, confidence trends, and previous risk scores into the current object state.",
+        "Continuous confidence monitoring would watch for instability: repeated sensor disagreement, confidence drops, sudden acceleration, altitude shifts, heading changes, or movement that diverges from the predicted path.",
+        "When the track becomes uncertain or irregular, Orion could trigger an adaptive re-scan request instead of waiting for a user to notice the issue manually.",
+        "New sensor data would update the object confidence, then force a re-evaluation so anomaly pressure, object class, and threat score reflect the latest evidence.",
+        "Stored object history would help future predictions because repeated irregular movement becomes a pattern, while a single strange reading can be treated as possible noise."
+      ]
+    },
+    "custom-sensor": {
+      addon: true,
+      title: "Custom observation system",
+      body: "Orion could be adapted to whatever observation tools a team already uses. Instead of relying on one fixed sensor setup, a defense or aerospace team could connect its own radar feeds, telescope data, satellite observations, aircraft tracking systems, drone telemetry, or internal monitoring tools.",
+      bullets: [
+        "Inputs would be normalized into a shared track format: position, velocity, altitude, confidence, timestamp, object type, uncertainty, and source reliability.",
+        "Different teams could weight sources differently depending on their mission, such as air defense, orbital tracking, drone monitoring, or coastal surveillance.",
+        "The same scoring, ML, and advisor pipeline could then run on organization-specific observation systems while still producing explainable threat assessments."
+      ]
+    },
+    "extra-data": {
+      addon: true,
+      title: "Extra data",
+      body: "This expansion would let a real team attach its own data sources. A defense or aerospace group could connect aircraft, missile, satellite, route, or threat-reference datasets that only that organization has.",
+      bullets: [
+        "Examples include internal aircraft registries, missile signature tables, radar cross-section libraries, known route/corridor data, satellite catalogs, restricted-zone watchlists, and prior incident archives.",
+        "Those sources would be joined onto live tracks as structured lookup results and model features, then consumed by the ML ensemble, C++ scorer, and advisor packet.",
+        "Instead of saying only 'unknown fast object,' Orion could compare the track against known platform families, expected behavior envelopes, or past anomalous patterns from the team's records."
+      ]
+    },
+    "knowledge-bases": {
+      addon: true,
+      title: "Specialized knowledge bases",
+      body: "This would make the advisor domain-specific without letting it invent live facts. The live state would still come from Orion, while background procedures and reference material would come from a controlled knowledge base.",
+      bullets: [
+        "A team could connect internal manuals, escalation playbooks, sensor interpretation guides, aircraft/missile references, or train/fine-tune an advisor model on approved defense material.",
+        "RAG retrieval could explain why a signature matters, what verification step is standard, or which response categories are allowed under a given operating rule.",
+        "The advisor would separate live evidence from reference knowledge: 'this track has these signals' versus 'the playbook says these signals require this next check.'"
+      ]
+    },
+    "agentic-advisor": {
+      addon: true,
+      title: "Agentic advisor",
+      body: "This would turn the advisor from a one-shot answerer into a multi-step investigation agent that actively gathers and compares evidence before responding.",
+      bullets: [
+        "The agent could inspect top-ranked tracks, compare score deltas, query catalogs, check sensor disagreement, retrieve similar cases, and run counterfactual score checks.",
+        "It could call tools such as rescan request, catalog lookup, log search, route comparison, similar-incident retrieval, and missing-evidence detection before writing a recommendation.",
+        "The final response would include what it checked, what uncertainty still matters, what action category it recommends, and what still requires human approval."
+      ]
     }
-    function closeDetail(){ if(!flowDetail) return; flowDetail.classList.remove('show'); flowDetail.setAttribute('aria-hidden','true'); }
+  };
 
-    document.querySelectorAll('.flow-node').forEach(node=>{
-      node.addEventListener('click',()=>openDetail(flowDetails[node.dataset.step], node.dataset.step));
-      node.addEventListener('keydown',e=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); openDetail(flowDetails[node.dataset.step], node.dataset.step); } });
-    });
-    document.querySelectorAll('.overlay-idea').forEach(item=>{
-      item.addEventListener('click',()=>openDetail(addonDetails[item.dataset.addon], null));
-      item.addEventListener('keydown',e=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); openDetail(addonDetails[item.dataset.addon], null); } });
-    });
-    flowDetailClose?.addEventListener('click',closeDetail);
-    flowDetail?.addEventListener('click',e=>{ if(e.target===flowDetail) closeDetail(); });
+  const flowDetail=document.getElementById('flowDetail');
+  const flowDetailClose=document.getElementById('flowDetailClose');
+  const flowDetailNumber=document.getElementById('flowDetailNumber');
+  const flowDetailTitle=document.getElementById('flowDetailTitle');
+  const flowDetailBody=document.getElementById('flowDetailBody');
+  const flowDetailList=document.getElementById('flowDetailList');
 
-    document.getElementById('prevSlide')?.addEventListener('click',()=>{ if(flowDetail?.classList.contains('show')){ closeDetail(); return; } if(i===schematicSlideIndex && schematicState>0){ schematicState--; applySchematic(); return; } show(i-1); });
-    document.getElementById('nextSlide')?.addEventListener('click',()=>{ if(flowDetail?.classList.contains('show')){ closeDetail(); return; } if(i===schematicSlideIndex && schematicState<2){ schematicState++; applySchematic(); return; } show(i+1); });
-    window.addEventListener('keydown',e=>{
-      if(e.key==='Escape'){
+  let feedbackDiagram=document.getElementById('feedbackDiagram');
+  if(!feedbackDiagram && flowDetailList){
+    feedbackDiagram=document.createElement('div');
+    feedbackDiagram.id='feedbackDiagram';
+    feedbackDiagram.className='feedback-diagram';
+    flowDetailList.insertAdjacentElement('afterend', feedbackDiagram);
+  }
+
+  function applySchematic(){
+    if(!flowCanvas) return;
+    flowCanvas.classList.toggle('highlight-top', schematicState===1);
+    flowCanvas.classList.toggle('highlight-bottom', schematicState===2);
+    flowCanvas.classList.toggle('addons-visible', schematicState>0);
+  }
+
+  function show(n){
+    i=Math.max(0,Math.min(slides.length-1,n));
+    slides.forEach(function(s,k){
+      s.classList.toggle('active',k===i);
+    });
+    if(pageNow) pageNow.textContent=i+1;
+  }
+
+  function buildFeedbackDiagram(){
+    return ''
+      + '<div class="feedback-diagram-inner">'
+      +   '<svg class="feedback-svg" viewBox="0 0 1000 250" preserveAspectRatio="none" aria-hidden="true">'
+      +     '<defs>'
+      +       '<marker id="fbArrowCyan" viewBox="0 0 10 10" refX="8.8" refY="5" markerWidth="7" markerHeight="7" orient="auto">'
+      +         '<path d="M 0 0 L 10 5 L 0 10 z" fill="#00c8ff"></path>'
+      +       '</marker>'
+      +       '<marker id="fbArrowGold" viewBox="0 0 10 10" refX="8.8" refY="5" markerWidth="7" markerHeight="7" orient="auto">'
+      +         '<path d="M 0 0 L 10 5 L 0 10 z" fill="#ffd775"></path>'
+      +       '</marker>'
+      +     '</defs>'
+      +     '<path d="M 285 63 L 375 63" fill="none" stroke="#00c8ff" stroke-width="3.2" stroke-linecap="round" marker-end="url(#fbArrowCyan)"/>'
+      +     '<path d="M 625 63 L 715 63" fill="none" stroke="#00c8ff" stroke-width="3.2" stroke-linecap="round" marker-end="url(#fbArrowCyan)"/>'
+      +     '<path d="M 840 98 C 840 130 790 136 680 140 C 515 146 310 140 205 150 C 175 154 160 144 160 134 L 160 164" fill="none" stroke="#00c8ff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#fbArrowCyan)"/>'
+      +     '<path d="M 285 199 L 375 199" fill="none" stroke="#00c8ff" stroke-width="3.2" stroke-linecap="round" marker-end="url(#fbArrowCyan)"/>'
+      +     '<path d="M 625 199 L 715 199" fill="none" stroke="#00c8ff" stroke-width="3.2" stroke-linecap="round" marker-end="url(#fbArrowCyan)"/>'
+      +     '<path d="M 965 199 C 985 199 987 162 987 112 C 987 48 956 20 896 16 C 805 10 720 18 625 30" fill="none" stroke="#ffd775" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="10 8" marker-end="url(#fbArrowGold)"/>'
+      +   '</svg>'
+      +   '<div class="feedback-box feedback-observe">Observation system collects object data</div>'
+      +   '<div class="feedback-box feedback-core">AI Fusion Core</div>'
+      +   '<div class="feedback-box feedback-monitor">Continuous confidence monitoring</div>'
+      +   '<div class="feedback-box feedback-rescan">Adaptive re-scan request</div>'
+      +   '<div class="feedback-box feedback-newdata">New sensor data</div>'
+      +   '<div class="feedback-box feedback-update">Confidence update + object re-evaluation</div>'
+      + '</div>';
+  }
+
+  function openDetail(data,badge){
+    if(!data || !flowDetail) return;
+
+    const card=flowDetail.querySelector('.flow-detail-card');
+    if(card){
+      card.classList.toggle('addon-mode',!!data.addon);
+      card.classList.toggle('feedback-mode',!!data.diagram);
+    }
+
+    document.body.classList.toggle('feedback-popup-open',!!data.diagram);
+
+    if(flowDetailNumber) flowDetailNumber.textContent=data.addon ? '' : (badge || data.badge || '•');
+    if(flowDetailTitle) flowDetailTitle.textContent=data.title;
+    if(flowDetailBody) flowDetailBody.textContent=data.body;
+    if(flowDetailList){
+      flowDetailList.innerHTML=(data.bullets||[]).map(function(item){
+        return '<li>'+item+'</li>';
+      }).join('');
+    }
+
+    if(feedbackDiagram){
+      feedbackDiagram.innerHTML=data.diagram ? buildFeedbackDiagram() : '';
+    }
+
+    flowDetail.classList.add('show');
+    flowDetail.setAttribute('aria-hidden','false');
+    if(flowDetailClose) flowDetailClose.focus();
+  }
+
+  function closeDetail(){
+    if(!flowDetail) return;
+
+    flowDetail.classList.remove('show');
+    flowDetail.setAttribute('aria-hidden','true');
+    document.body.classList.remove('feedback-popup-open');
+
+    const card=flowDetail.querySelector('.flow-detail-card');
+    if(card){
+      card.classList.remove('feedback-mode');
+      card.classList.remove('addon-mode');
+    }
+
+    if(feedbackDiagram) feedbackDiagram.innerHTML='';
+  }
+
+  document.querySelectorAll('.flow-node').forEach(function(node){
+    node.addEventListener('click',function(){
+      openDetail(flowDetails[node.dataset.step],node.dataset.step);
+    });
+
+    node.addEventListener('keydown',function(e){
+      if(e.key==='Enter' || e.key===' '){
         e.preventDefault();
-        if(flowDetail?.classList.contains('show')) closeDetail();
-        else window.location.href='/';
+        openDetail(flowDetails[node.dataset.step],node.dataset.step);
+      }
+    });
+  });
+
+  document.querySelectorAll('.overlay-idea').forEach(function(item){
+    item.addEventListener('click',function(){
+      openDetail(addonDetails[item.dataset.addon],null);
+    });
+
+    item.addEventListener('keydown',function(e){
+      if(e.key==='Enter' || e.key===' '){
+        e.preventDefault();
+        openDetail(addonDetails[item.dataset.addon],null);
+      }
+    });
+  });
+
+  if(flowDetailClose){
+    flowDetailClose.addEventListener('click',closeDetail);
+  }
+
+  if(flowDetail){
+    flowDetail.addEventListener('click',function(e){
+      if(e.target===flowDetail) closeDetail();
+    });
+  }
+
+  const prevButton=document.getElementById('prevSlide');
+  const nextButton=document.getElementById('nextSlide');
+
+  if(prevButton){
+    prevButton.addEventListener('click',function(){
+      if(flowDetail && flowDetail.classList.contains('show')){
+        closeDetail();
         return;
       }
-      if(flowDetail?.classList.contains('show')) return;
-      if(['ArrowRight',' ','PageDown'].includes(e.key)){
-        e.preventDefault();
-        if(i===schematicSlideIndex && schematicState<2){ schematicState++; applySchematic(); return; }
-        show(i+1); return;
+
+      if(i===schematicSlideIndex && schematicState>0){
+        schematicState--;
+        applySchematic();
+        return;
       }
-      if(['ArrowLeft','PageUp'].includes(e.key)){
-        e.preventDefault();
-        if(i===schematicSlideIndex && schematicState>0){ schematicState--; applySchematic(); return; }
-        show(i-1); return;
-      }
+
+      show(i-1);
     });
-    show(0); applySchematic();
-  </script>
+  }
+
+  if(nextButton){
+    nextButton.addEventListener('click',function(){
+      if(flowDetail && flowDetail.classList.contains('show')){
+        closeDetail();
+        return;
+      }
+
+      if(i===schematicSlideIndex && schematicState<2){
+        schematicState++;
+        applySchematic();
+        return;
+      }
+
+      show(i+1);
+    });
+  }
+
+  window.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){
+      e.preventDefault();
+
+      if(flowDetail && flowDetail.classList.contains('show')){
+        closeDetail();
+      }else{
+        window.location.href='/';
+      }
+
+      return;
+    }
+
+    if(flowDetail && flowDetail.classList.contains('show')) return;
+
+    if(e.key==='ArrowRight' || e.key===' ' || e.key==='PageDown'){
+      e.preventDefault();
+
+      if(i===schematicSlideIndex && schematicState<2){
+        schematicState++;
+        applySchematic();
+        return;
+      }
+
+      show(i+1);
+      return;
+    }
+
+    if(e.key==='ArrowLeft' || e.key==='PageUp'){
+      e.preventDefault();
+
+      if(i===schematicSlideIndex && schematicState>0){
+        schematicState--;
+        applySchematic();
+        return;
+      }
+
+      show(i-1);
+      return;
+    }
+  });
+
+  show(0);
+  applySchematic();
+})();
+</script>
 </body>
 </html>

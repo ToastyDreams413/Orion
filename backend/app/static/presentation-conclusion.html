@@ -70,8 +70,6 @@
 
     .layer-help{position:absolute;left:50%;top:5.25%;transform:translate(-50%,-50%);z-index:5;color:#071220;font-size:min(2.35vh,25px);line-height:1.25;font-weight:980;letter-spacing:-.01em;text-shadow:none;padding:9px 18px;border-radius:999px;border:1px solid rgba(255,245,214,.92);background:linear-gradient(135deg,rgba(255,215,117,.98),rgba(255,172,84,.94));box-shadow:0 10px 26px rgba(0,0,0,.26),0 0 26px rgba(255,215,117,.32);white-space:nowrap;overflow:hidden;transition:opacity .22s ease,filter .22s ease,border-color .22s ease,box-shadow .22s ease,background .22s ease}
     .layer-help::after{content:"";position:absolute;top:-40%;bottom:-40%;left:-35%;width:18%;transform:skewX(-22deg);background:linear-gradient(90deg,transparent,rgba(255,255,255,.62),transparent);opacity:0;animation:hintGlint 6.8s ease-in-out infinite;pointer-events:none}
-    .addons-visible .layer-help{opacity:.34;filter:saturate(.48) brightness(.88);border-color:rgba(255,215,117,.25);background:rgba(255,215,117,.18);box-shadow:0 8px 18px rgba(0,0,0,.14)}
-    .addons-visible .layer-help::after{animation:none;opacity:0}
     @keyframes hintGlint{0%,72%{left:-35%;opacity:0}76%{opacity:.42}92%{left:112%;opacity:.42}96%,100%{left:112%;opacity:0}}
     .node.flow-node{cursor:pointer;position:absolute;user-select:none;border-color:rgba(114,232,255,.42);box-shadow:0 14px 34px rgba(0,0,0,.24),0 0 0 1px rgba(114,232,255,.12),0 0 18px rgba(114,232,255,.075),inset 0 -16px 30px rgba(114,232,255,.045);transition:opacity .2s ease,filter .2s ease,box-shadow .16s ease,border-color .16s ease,transform .16s ease,background .16s ease}
     .node.flow-node::before{content:"";position:absolute;inset:5px;border-radius:18px;border:1px solid rgba(255,255,255,.07);background:linear-gradient(135deg,rgba(255,255,255,.055),transparent 34%);pointer-events:none}
@@ -404,10 +402,30 @@
   const flowCanvas=document.getElementById('flowCanvas');
   const schematicSlideIndex=4;
 
+  const extraSchematicPages=2;
+  const totalPages=slides.length + extraSchematicPages;
+
   let i=0;
   let schematicState=0;
 
-  if(pageTotal) pageTotal.textContent=slides.length;
+  if(pageTotal) pageTotal.textContent=totalPages;
+
+  function getVirtualPageNumber(){
+    if(i===schematicSlideIndex){
+      return i + 1 + schematicState;
+    }
+
+    if(i > schematicSlideIndex){
+      return i + 1 + extraSchematicPages;
+    }
+
+    return i + 1;
+  }
+
+  function updatePageCount(){
+    if(pageNow) pageNow.textContent=getVirtualPageNumber();
+    if(pageTotal) pageTotal.textContent=totalPages;
+  }
 
   const flowDetails = {
     "1": {
@@ -558,17 +576,29 @@
 
   function applySchematic(){
     if(!flowCanvas) return;
+
     flowCanvas.classList.toggle('highlight-top', schematicState===1);
     flowCanvas.classList.toggle('highlight-bottom', schematicState===2);
     flowCanvas.classList.toggle('addons-visible', schematicState>0);
+
+    updatePageCount();
   }
 
   function show(n){
-    i=Math.max(0,Math.min(slides.length-1,n));
+    const nextIndex=Math.max(0,Math.min(slides.length-1,n));
+
+    i=nextIndex;
+
+    if(i!==schematicSlideIndex){
+      schematicState=0;
+    }
+
     slides.forEach(function(s,k){
       s.classList.toggle('active',k===i);
     });
-    if(pageNow) pageNow.textContent=i+1;
+
+    applySchematic();
+    updatePageCount();
   }
 
   function buildFeedbackDiagram(){
@@ -707,9 +737,11 @@
         return;
       }
 
-      if(i===schematicSlideIndex && schematicState<2){
-        schematicState++;
-        applySchematic();
+      if(i===schematicSlideIndex){
+        if(schematicState<2){
+          schematicState++;
+          applySchematic();
+        }
         return;
       }
 
@@ -735,9 +767,11 @@
     if(e.key==='ArrowRight' || e.key===' ' || e.key==='PageDown'){
       e.preventDefault();
 
-      if(i===schematicSlideIndex && schematicState<2){
-        schematicState++;
-        applySchematic();
+      if(i===schematicSlideIndex){
+        if(schematicState<2){
+          schematicState++;
+          applySchematic();
+        }
         return;
       }
 
@@ -760,7 +794,6 @@
   });
 
   show(0);
-  applySchematic();
 })();
 </script>
 </body>
